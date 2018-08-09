@@ -1,0 +1,7 @@
+import { Document } from 'mongoose';
+
+export class {{className}} {
+    constructor() {}
+}
+
+export interface {{className}}Document extends Document, {{className}} {}

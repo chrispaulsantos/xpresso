@@ -1,0 +1,7 @@
+import { Schema, SchemaDefinition } from 'mongoose';
+
+const schemaDefinition: SchemaDefinition = {};
+
+const {{schemaName}}Schema: Schema = new Schema(schemaDefinition);
+
+export default {{schemaName}}Schema;

@@ -1,0 +1,65 @@
+import { Application, NextFunction, Request, Response } from 'express';
+import * as jwt from 'jsonwebtoken';
+import * as log4js from 'log4js';
+
+const LOGGER = log4js.getLogger('AuthRoutes');
+const SECRET = '{{SECRET_KET}}';
+
+export class AuthRoutes {
+    public static initialize(app: Application): void {
+        LOGGER.info('Initializing AuthRoutes');
+        let route: AuthRoutes = new this(app);
+        route.bootstrap();
+    }
+
+    public static checkToken(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): void {
+        const token = req.header('x-api-token');
+        if (!token || token === '') {
+            return res.status(401).end();
+        }
+
+        try {
+            const decoded = jwt.verify(token, SECRET);
+
+            if (decoded) {
+                next();
+            } else {
+                return res.status(401).end();
+            }
+        } catch (e) {
+            LOGGER.error(`${req.id} - ${e.message}`);
+            return res.status(401).end();
+        }
+    }
+
+    private app: Application;
+
+    constructor(app: Application) {
+        this.app = app;
+    }
+
+    private bootstrap(): void {
+        this.app.get('/login', (req: Request, res: Response) => {
+            const username = req.query.username;
+            const password = req.query.password;
+
+            if (!username || username === '') {
+                return res.status(400).json({ message: 'InvalidRequest' });
+            }
+            if (!password || password === '') {
+                return res.status(400).json({ message: 'InvalidRequest' });
+            }
+
+            const token = this.generateToken();
+            res.status(200).json({ token });
+        });
+    }
+
+    private generateToken(): string {
+        return jwt.sign({}, SECRET);
+    }
+}

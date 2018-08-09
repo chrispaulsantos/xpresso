@@ -1,0 +1,33 @@
+{
+    "name": "",
+    "version": "1.0.0",
+    "xpresso": true,
+    "logging": true,
+    "description": "Project description",
+    "main": "index.js",
+    "scripts": {
+        "test": "",
+        "build": "node_modules/typescript/bin/tsc"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/express": "^4.16.0",
+        "@types/express-ws": "^3.0.0",
+        "@types/jsonwebtoken": "^7.2.8",
+        "@types/mongoose": "^5.2.4",
+        "@types/morgan": "^1.7.35",
+        "@types/uuid": "^3.4.3",
+        "typescript": "^3.0.1"
+    },
+    "dependencies": {
+        "chalk": "^2.4.1",
+        "express": "^4.16.3",
+        "express-ws": "^4.0.0",
+        "jsonwebtoken": "^8.3.0",
+        "log4js": "^3.0.4",
+        "mongoose": "^5.2.7",
+        "morgan": "^1.9.0",
+        "uuid": "^3.3.2"
+    }
+}

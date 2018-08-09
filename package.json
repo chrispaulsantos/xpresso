@@ -1,0 +1,36 @@
+{
+  "name": "xpresso",
+  "version": "1.0.0",
+  "description": "A typescript express generator for fast, scalable REST APIs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chris Santos",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/express": "^4.16.0",
+    "@types/express-ws": "^3.0.0",
+    "@types/jsonwebtoken": "^7.2.8",
+    "@types/mongoose": "^5.2.4",
+    "@types/morgan": "^1.7.35",
+    "@types/uuid": "^3.4.3",
+    "chalk": "^2.4.1",
+    "express": "^4.16.3",
+    "express-ws": "^4.0.0",
+    "jsonwebtoken": "^8.3.0",
+    "log4js": "^3.0.4",
+    "mongoose": "^5.2.7",
+    "morgan": "^1.9.0",
+    "typescript": "^3.0.1",
+    "uuid": "^3.3.2"
+  },
+  "dependencies": {
+    "commander": "^2.17.1",
+    "lodash": "^4.17.10",
+    "ncp": "^2.0.0"
+  },
+  "bin": {
+    "xpresso": "./index.js"
+  }
+}

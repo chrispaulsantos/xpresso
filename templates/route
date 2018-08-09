@@ -1,0 +1,44 @@
+import * as express from 'express';
+import { Request, Response } from 'express';
+import * as log4js from 'log4js';
+{{websocketImport}}
+
+{{authImport}}
+
+const LOGGER = log4js.getLogger('{{className}}Routes');
+
+export class {{className}}Routes {
+    public static initialize(app: Application): void {
+        LOGGER.info('Initializing {{className}}Routes');
+        let route: {{className}}Routes = new this(app);
+        route.bootstrap();
+    }
+
+    private app: Application;
+
+    constructor(app: Application) {
+        this.app = app;
+    }
+
+    private bootstrap(): void {
+        {{authMiddleware}}
+
+        {{websocketRoute}}
+
+        this.app.get('/{{routeName}}', (req: Request, res: Response) => {
+            res.status(200).end();
+        })
+        this.app.post('/{{routeName}}', (req: Request, res: Response) => {
+            res.status(200).end();
+        })
+        this.app.get('/{{routeName}}/:id', (req: Request, res: Response) => {
+            res.status(200).end();
+        })
+        this.app.put('/{{routeName}}/:id', (req: Request, res: Response) => {
+            res.status(200).end();
+        })
+        this.app.delete('/{{routeName}}/:id', (req: Request, res: Response) => {
+            res.status(200).end();
+        })
+    }
+}
