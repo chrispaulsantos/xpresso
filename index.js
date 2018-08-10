@@ -10,7 +10,7 @@ PROJECT_DIR = '';
 PROJECT_PACKAGE = '';
 SRC_DIR = '';
 
-program.version('0.0.1', '-v, --version');
+program.version('1.0.5', '-v, --version');
 
 program
     .command('init [name]')

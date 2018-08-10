@@ -1,12 +1,14 @@
 {
   "name": "xpresso",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "A typescript express generator for fast, scalable REST APIs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Chris Santos",
+  "repository": "chrissantosproduction/xpresso",
+  "preferGlobal": true,
   "license": "MIT",
   "devDependencies": {
     "@types/express": "^4.16.0",
