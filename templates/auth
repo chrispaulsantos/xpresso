@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import { Logger } from '../services/logger';
 
 const LOGGER = Logger.getLogger('AuthRoutes');
-const SECRET = '{{SECRET_KET}}';
+const SECRET = '{{SECRET_KEY}}';
 
 export class AuthRoutes {
     public static initialize(app: Application): void {

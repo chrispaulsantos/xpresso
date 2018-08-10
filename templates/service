@@ -1,6 +1,7 @@
 import { Model, model } from 'mongoose';
 import { {{className}}Document, {{className}} } from '../models/{{routeName}}';
 import { Logger } from './logger';
+const context = require('express-cls-hooked')
 
 const LOGGER = Logger.getLogger('{{className}}Service');
 
