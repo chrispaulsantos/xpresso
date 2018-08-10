@@ -23,6 +23,7 @@
     "dependencies": {
         "chalk": "^2.4.1",
         "express": "^4.16.3",
+        "express-cls-hooked": "^0.3.8",
         "express-ws": "^4.0.0",
         "jsonwebtoken": "^8.3.0",
         "log4js": "^3.0.4",

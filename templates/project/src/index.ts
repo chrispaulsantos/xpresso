@@ -1,18 +1,17 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
 import * as ws from 'express-ws';
-import { configure, getLogger } from 'log4js';
 import * as morgan from 'morgan';
 import { connect } from './database';
 import { Server } from './server';
+import { Logger } from './services/logger';
 
 // STARTIMPORTS //
 // ENDIMPORTS //
 
 // Initialize logger
-const LOGGER = getLogger();
-LOGGER.level = process.env.LOG_LEVEL || 'debug';
-configure({
+const LOGGER = Logger.getLogger();
+Logger.configure({
     appenders: {
         out: {
             type: 'stdout'
@@ -24,7 +23,7 @@ configure({
             level: process.env.LOG_LEVEL || 'debug'
         }
     }
-})
+});
 
 LOGGER.info(`Version: ${process.version}`);
 LOGGER.info('Initializing server');
@@ -48,10 +47,10 @@ connect(() => {
     // ENDROUTES //
 
     app.use('*', (req: Request, res: Response) => {
-        res.status(404).json({message: 'RouteNotFound'});
-    })
+        res.status(404).json({ message: 'RouteNotFound' });
+    });
 
     app.listen(process.env.PORT || 8080, () => {
         LOGGER.info(`Server intialized: Port ${process.env.PORT || 8080}`);
-    })
-})
+    });
+});

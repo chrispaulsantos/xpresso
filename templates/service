@@ -1,0 +1,26 @@
+import { Model, model } from 'mongoose';
+import { {{className}}Document, {{className}} } from '../models/{{routeName}}';
+import { Logger } from './logger';
+
+const LOGGER = Logger.getLogger('{{className}}Service');
+
+export class {{className}}Service {
+    private {{routeName}}Model: Model<{{className}}Document>;
+
+    constructor() {
+        this.{{routeName}}Model = model('{{routeName}}');
+    }
+
+    public async getAll(): Promise<{{className}}[]> {
+        let {{routeName}}s: {{className}}[] = [];
+
+        try {
+            {{routeName}}s = await this.{{routeName}}Model.find({});
+        } catch (e) {
+            LOGGER.error(e);
+            throw e;
+        }
+
+        return {{routeName}}s;
+    }
+}

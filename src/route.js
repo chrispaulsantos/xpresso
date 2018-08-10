@@ -15,6 +15,7 @@ function generate(routeName, options) {
     // Get destination path
     let destinationPath = path.join(SRC_DIR, `routes/${routeName}.ts`);
 
+    // Check if the route already exists
     if (fs.existsSync(destinationPath)) {
         console.error('Route with that name already exists');
         process.exit(1);
@@ -23,10 +24,7 @@ function generate(routeName, options) {
     // Read the template
     let template = fs.readFileSync(templatePath).toString();
 
-    // Convert to string and replace
-    template = template.replace(/{{className}}/g, className);
-    template = template.replace(/{{routeName}}/g, routeName);
-
+    // Create replacements
     let replacements = [
         {
             key: /{{className}}/g,
@@ -53,12 +51,18 @@ function generate(routeName, options) {
         {
             key: /{{websocketRoute}}/g,
             with: options.websocket
-                ? `this.app.ws('/${routeName}', (ws: WebSocket, req: Request) => {})`
+                ? `
+                    this.app.ws('/${routeName}', (ws: WebSocket, req: Request) => {
+                        ws.on('message', msg => {
+                            ws.send('I recieved your message: ' + msg);
+                        });
+                    });
+                `
                 : ''
         }
     ];
 
-    updateTemplate(template, destinationPath, replacements);
+    util.writeTemplate(template, destinationPath, replacements);
 
     let content = `import { ${className}Routes } from './routes/${routeName}';`;
     util.updateFileByKey('index.ts', 'ENDIMPORTS', content);
@@ -79,7 +83,7 @@ function generate(routeName, options) {
         }
     ];
 
-    updateTemplate(template, destinationPath, replacements);
+    util.writeTemplate(template, destinationPath, replacements);
 
     /* * * * SCHEMA GENERATION * * * */
     // Get schema template path
@@ -95,7 +99,7 @@ function generate(routeName, options) {
         }
     ];
 
-    updateTemplate(template, destinationPath, replacements);
+    util.writeTemplate(template, destinationPath, replacements);
 
     // Update imports
     content = `import ${className}Schema from './schema/${routeName}';`;
@@ -104,6 +108,25 @@ function generate(routeName, options) {
     util.updateFileByKey('database/index.ts', 'ENDMODELIMPORTS', content);
     content = `connection.model<${className}Document>('${routeName}', ${className}Schema);`;
     util.updateFileByKey('database/index.ts', 'ENDMODELS', content);
+
+    /* * * * SERVICE GENERATION * * * */
+    templatePath = path.join(TEMPLATE_DIR, 'service');
+    destinationPath = path.join(SRC_DIR, `services/${routeName}.ts`);
+
+    template = fs.readFileSync(templatePath).toString();
+
+    replacements = [
+        {
+            key: /{{className}}/g,
+            with: className
+        },
+        {
+            key: /{{routeName}}/g,
+            with: routeName
+        }
+    ];
+
+    util.writeTemplate(template, destinationPath, replacements);
 }
 
 function auth() {
@@ -121,7 +144,7 @@ function auth() {
         }
     ];
 
-    updateTemplate(template, destinationPath, replacements);
+    util.writeTemplate(template, destinationPath, replacements);
 
     let content = `import { AuthRoutes } from './routes/auth';`;
     util.updateFileByKey('index.ts', 'ENDIMPORTS', content);
@@ -129,17 +152,7 @@ function auth() {
     util.updateFileByKey('index.ts', 'ENDROUTES', content);
 }
 
-function updateTemplate(template, filePathToWrite, replacements) {
-    replacements.forEach(replacement => {
-        template = template.replace(replacement.key, replacement.with);
-    });
-
-    fs.writeFileSync(filePathToWrite, template);
-    console.log(filePathToWrite);
-}
-
 module.exports = {
     generate,
-    auth,
-    updateTemplate
+    auth
 };

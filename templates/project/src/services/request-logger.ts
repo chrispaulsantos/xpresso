@@ -51,6 +51,11 @@ export class RequestLogger {
             str += chalk.hex(methodColor)(`${padRight(method, 8)}`);
             // Add status of request
             str += chalk.hex(statusColor)(` ${status.toString()} `);
+            // Add forwarded for
+
+            str += req.headers['x-forwarded-for']
+                ? `${req.headers['x-forwarded-for']} `
+                : '';
             // Add response time of request
             const responseTime: string = tokens['response-time'](req, res);
             str += chalk.reset(padRight(`${responseTime}ms `, 12));
@@ -65,8 +70,6 @@ export class RequestLogger {
                 url = match[1];
             }
             str += `${padRight(url, 40)} `;
-            
-            str += `${req.headers['x-forwarded-for']}`;
 
             return str;
         });

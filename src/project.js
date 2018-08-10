@@ -3,10 +3,11 @@ const fs = require('fs');
 const _ = require('lodash');
 const path = require('path');
 const ncp = require('ncp');
+const util = require('./utility');
 
 /* GENERATE THE INITIAL PROJECT STRUCTURE */
 function generateFolderStructure(projectName) {
-    if (PROJECT_DIR) {
+    if (util.isXpressoProject()) {
         console.error('Cannot initialize a project inside another project');
         process.exit(1);
     }
@@ -41,9 +42,11 @@ function generateFolderStructure(projectName) {
                 return files_;
             }
 
-            getFiles(projectDir).forEach(file => {
-                console.log(file);
-            });
+            getFiles(projectDir)
+                .sort()
+                .forEach(file => {
+                    console.log(file);
+                });
 
             // Get package path
             const packagePath = path.join(projectDir, 'package.json');
@@ -99,11 +102,11 @@ function npmInstall() {
     const npm = child_process.spawn('npm', ['i']);
 
     npm.stdout.on('data', data => {
-        console.log(data);
+        console.log(data.toString());
     });
 
     npm.stderr.on('data', data => {
-        console.error(data);
+        console.error(data.toString());
     });
 
     npm.on('close', code => {});

@@ -1,11 +1,14 @@
 import * as express from 'express';
 import { Request, Response } from 'express';
-import * as log4js from 'log4js';
+import { Logger } from '../services/logger';
 {{websocketImport}}
 
 {{authImport}}
 
-const LOGGER = log4js.getLogger('{{className}}Routes');
+import { {{className}}Service } from '../services/{{routeName}}';
+import { {{className}} } from '../models/{{routeName}}';
+
+const LOGGER = Logger.getLogger('{{className}}Routes');
 
 export class {{className}}Routes {
     public static initialize(app: Application): void {
@@ -15,29 +18,32 @@ export class {{className}}Routes {
     }
 
     private app: Application;
+    private {{routeName}}Service: {{className}}Service;
 
     constructor(app: Application) {
         this.app = app;
+        this.{{routeName}}Service = new {{className}}Service();
     }
 
     private bootstrap(): void {
-        {{authMiddleware}}
-
         {{websocketRoute}}
 
-        this.app.get('/{{routeName}}', (req: Request, res: Response) => {
+        {{authMiddleware}}
+
+        this.app.get('/{{routeName}}', async (req: Request, res: Response) => {
+            const {{routeName}}s: {{className}}[] = await this.{{routeName}}Service.getAll();
+            res.status(200).json({ list: {{routeName}}s });
+        })
+        this.app.post('/{{routeName}}', async (req: Request, res: Response) => {
             res.status(200).end();
         })
-        this.app.post('/{{routeName}}', (req: Request, res: Response) => {
+        this.app.get('/{{routeName}}/:id', async (req: Request, res: Response) => {
             res.status(200).end();
         })
-        this.app.get('/{{routeName}}/:id', (req: Request, res: Response) => {
+        this.app.put('/{{routeName}}/:id', async (req: Request, res: Response) => {
             res.status(200).end();
         })
-        this.app.put('/{{routeName}}/:id', (req: Request, res: Response) => {
-            res.status(200).end();
-        })
-        this.app.delete('/{{routeName}}/:id', (req: Request, res: Response) => {
+        this.app.delete('/{{routeName}}/:id', async (req: Request, res: Response) => {
             res.status(200).end();
         })
     }

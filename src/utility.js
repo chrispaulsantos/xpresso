@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const prettier = require('prettier');
 
 function getXpressoDirectory() {
     let dir = path.join(
@@ -11,21 +12,24 @@ function getXpressoDirectory() {
     return dir;
 }
 
-function getProjectDirectory() {
-    let pwd = process.env.PWD;
-    let packagePath = getProjectDirectoryPath();
+function isXpressoProject() {
+    let projectPath = getProjectDirectoryPath();
 
-    if (packagePath) {
+    if (projectPath) {
+        const packagePath = path.join(projectPath, 'package.json');
+
+        if (!fs.existsSync(packagePath)) {
+            return false;
+        }
+
         PROJECT_PACKAGE = JSON.parse(fs.readFileSync(packagePath).toString());
         if (PROJECT_PACKAGE.xpresso) {
-            return path.resolve(packagePath.match(/(.+)\/.+$/)[1]);
+            return true;
         } else {
-            console.error('Not an xpresso project');
-            process.exit(1);
+            return false;
         }
     } else {
-        console.error('Not an xpresso project');
-        process.exit(1);
+        return false;
     }
 }
 
@@ -45,7 +49,7 @@ function getProjectDirectoryPath() {
         pwd = pwd.slice(0, a[i] + 1);
     }
 
-    return packagePath;
+    return pwd;
 }
 
 function updateFileByKey(fileName, searchKey, content) {
@@ -58,12 +62,36 @@ function updateFileByKey(fileName, searchKey, content) {
     const end = fileContents.slice(keyIndex, fileContents.length);
     const full = start.concat(`${content}\n`, end);
 
-    fs.writeFileSync(filePath, full);
+    // Clean up code
+    const prettiered = prettier.format(full, {
+        tabWidth: 4,
+        singleQuote: true,
+        parser: 'typescript'
+    });
+
+    fs.writeFileSync(filePath, prettiered);
+}
+
+function writeTemplate(template, filePathToWrite, replacements) {
+    replacements.forEach(replacement => {
+        template = template.replace(replacement.key, replacement.with);
+    });
+
+    // Clean up code
+    const prettiered = prettier.format(template, {
+        tabWidth: 4,
+        singleQuote: true,
+        parser: 'typescript'
+    });
+
+    fs.writeFileSync(filePathToWrite, prettiered);
+    console.log(filePathToWrite);
 }
 
 module.exports = {
     getXpressoDirectory,
-    getProjectDirectory,
+    isXpressoProject,
     getProjectDirectoryPath,
-    updateFileByKey
+    updateFileByKey,
+    writeTemplate
 };

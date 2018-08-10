@@ -1,8 +1,8 @@
 import { Application, NextFunction, Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
-import * as log4js from 'log4js';
+import { Logger } from '../services/logger';
 
-const LOGGER = log4js.getLogger('AuthRoutes');
+const LOGGER = Logger.getLogger('AuthRoutes');
 const SECRET = '{{SECRET_KET}}';
 
 export class AuthRoutes {
@@ -31,7 +31,7 @@ export class AuthRoutes {
                 return res.status(401).end();
             }
         } catch (e) {
-            LOGGER.error(`${req.id} - ${e.message}`);
+            LOGGER.error(e.message);
             return res.status(401).end();
         }
     }
