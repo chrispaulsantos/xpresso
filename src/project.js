@@ -28,6 +28,11 @@ function generateFolderStructure(projectName) {
                 reject('Failed to copy directory');
             }
 
+            const folders = ['middleware', 'models', 'routes', 'database/schema'];
+            folders.forEach(folder=> {
+                fs.mkdirSync(path.join(projectDir, 'src', folder));
+            });
+
             function getFiles(dir, files_) {
                 files_ = files_ || [];
                 var files = fs.readdirSync(dir);
