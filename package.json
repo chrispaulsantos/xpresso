@@ -4,7 +4,7 @@
   "description": "A typescript express generator for fast, scalable REST APIs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/jest/bin/jest.js"
   },
   "author": "Chris Santos",
   "repository": "chrissantosproduction/xpresso",
@@ -21,6 +21,7 @@
     "express": "^4.16.3",
     "express-cls-hooked": "^0.3.8",
     "express-ws": "^4.0.0",
+    "jest": "^23.5.0",
     "jsonwebtoken": "^8.3.0",
     "log4js": "^3.0.4",
     "mongoose": "^5.2.7",
