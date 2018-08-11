@@ -8,21 +8,26 @@ function init(name, options) {
         console.error('Provide a project name');
         process.exit(1);
     }
+    if (options.dbUrl && !options.dbUrl.match(/^mongodb:\/\/.+/)) {
+        console.log('Incorrect mongodb uri');
+        process.exit(1);
+    }
     if (util.isXpressoProject()) {
         console.error('Cannot create project inside a project');
         process.exit(1);
     }
 
     project
-        .generateFolderStructure(name)
+        .generateFolderStructure(name, options)
         .then(projectDir => {
             PROJECT_DIR = projectDir;
             SRC_DIR = path.join(PROJECT_DIR, 'src');
 
             if (options.auth) {
-                route.auth();
+                route.auth(options);
             }
 
+            console.log('- Installing dependencies')
             project.npmInstall();
         })
         .catch(err => {

@@ -51,6 +51,6 @@ connect(() => {
     });
 
     app.listen(process.env.PORT || 8080, () => {
-        LOGGER.info(`Server intialized: Port ${process.env.PORT || 8080}`);
+        LOGGER.info(`Application started: Port ${process.env.PORT || 8080}`);
     });
 });

@@ -127,12 +127,36 @@ function generate(routeName, options) {
     ];
 
     util.writeTemplate(template, destinationPath, replacements);
+
+    /* * * * TEST GENERATION * * * */
+    templatePath = path.join(TEMPLATE_DIR, 'route.spec');
+    destinationPath = path.join(
+        PROJECT_DIR,
+        `tests/routes/${routeName}.unit.spec.ts`
+    );
+
+    template = fs.readFileSync(templatePath).toString();
+
+    replacements = [
+        {
+            key: /{{className}}/g,
+            with: className
+        },
+        {
+            key: /{{routeName}}/g,
+            with: routeName
+        }
+    ];
+
+    util.writeTemplate(template, destinationPath, replacements);
 }
 
-function auth() {
+function auth(options) {
+    console.log('- Generating secret');
     // Generate 512-bit string
     const secret = crypto.randomBytes(32).toString('hex');
 
+    console.log('- Updating auth route');
     const templatePath = path.join(TEMPLATE_DIR, 'auth');
     const destinationPath = path.join(SRC_DIR, 'routes/auth.ts');
 
@@ -141,6 +165,15 @@ function auth() {
         {
             key: /{{SECRET_KEY}}/g,
             with: secret
+        },
+        {
+            key: /{{refreshToken}}/g,
+            with: options.refresh
+                ? `
+                    let refreshToken: string = AuthRoutes.generateToken();
+                    res.setHeader('x-api-token', refreshToken);
+                `
+                : ''
         }
     ];
 

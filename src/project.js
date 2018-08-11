@@ -6,7 +6,7 @@ const ncp = require('ncp');
 const util = require('./utility');
 
 /* GENERATE THE INITIAL PROJECT STRUCTURE */
-function generateFolderStructure(projectName) {
+function generateFolderStructure(projectName, options) {
     if (util.isXpressoProject()) {
         console.error('Cannot initialize a project inside another project');
         process.exit(1);
@@ -14,6 +14,7 @@ function generateFolderStructure(projectName) {
 
     const pwd = process.env.PWD;
 
+    console.log('- Creating project directory');
     // Make project directory
     const projectDir = path.join(pwd, projectName);
     console.log(projectDir);
@@ -22,16 +23,12 @@ function generateFolderStructure(projectName) {
     // Copy project structure
     const projectTemplateStructurePath = path.join(TEMPLATE_DIR, 'project');
 
+    console.log('- Copying default template structure');
     return new Promise((resolve, reject) => {
         ncp(projectTemplateStructurePath, projectDir, err => {
             if (err) {
                 reject('Failed to copy directory');
             }
-
-            const folders = ['middleware', 'models', 'routes', 'database/schema'];
-            folders.forEach(folder=> {
-                fs.mkdirSync(path.join(projectDir, 'src', folder));
-            });
 
             function getFiles(dir, files_) {
                 files_ = files_ || [];
@@ -53,49 +50,64 @@ function generateFolderStructure(projectName) {
                     console.log(file);
                 });
 
+            console.log('- Creating remaining folders');
+            const folders = [
+                'middleware',
+                'models',
+                'routes',
+                'database/schema'
+            ];
+            folders.forEach(folder => {
+                let folderPath = path.join(projectDir, 'src', folder);
+                fs.mkdirSync(folderPath);
+                console.log(folderPath);
+            });
+
+            console.log('- Updating package parameters');
             // Get package path
             const packagePath = path.join(projectDir, 'package.json');
 
             // Update properties in package.json
-            fs.readFile(packagePath, (err, data) => {
-                if (err) {
-                    reject(err);
-                }
+            let data = fs.readFileSync(packagePath);
 
-                let json = JSON.parse(data.toString());
-                json.name = _.startCase(projectName);
+            let json = JSON.parse(data.toString());
+            json.name = _.startCase(projectName);
 
-                // Check options
-                if (program.repo && program.repo !== '') {
-                    json.repository = program.repo;
-                } else {
-                    json.repository = '';
-                }
+            // Check options
+            if (options.repo && options.repo !== '') {
+                json.repository = options.repo;
+            } else {
+                json.repository = '';
+            }
 
-                if (program.summary && program.summary !== '') {
-                    json.description = program.summary;
-                } else {
-                    json.description = '';
-                }
+            if (options.summary && options.summary !== '') {
+                json.description = options.summary;
+            } else {
+                json.description = '';
+            }
 
-                fs.writeFileSync(packagePath, JSON.stringify(json));
-            });
+            fs.writeFileSync(packagePath, JSON.stringify(json));
+            console.log(packagePath);
 
+            console.log('- Updating database parameters');
             // Get database connection file path
             const databasePath = path.join(projectDir, 'src/database/index.ts');
-            fs.readFile(databasePath, (err, data) => {
-                if (err) {
-                    reject(err);
+            let template = fs.readFileSync(databasePath).toString();
+
+            let replacements = [
+                {
+                    key: /{{databaseName}}/g,
+                    with: projectName.toLowerCase()
+                },
+                {
+                    key: /{{databaseUrl}}/g,
+                    with: options.dbUrl
+                        ? options.dbUrl
+                        : 'mongodb://localhost:27017'
                 }
+            ];
 
-                let template = data.toString();
-                template = template.replace(
-                    /{{databaseName}}/g,
-                    projectName.toLowerCase()
-                );
-
-                fs.writeFileSync(databasePath, template);
-            });
+            util.writeTemplate(template, databasePath, replacements);
 
             resolve(projectDir);
         });
@@ -104,17 +116,7 @@ function generateFolderStructure(projectName) {
 
 function npmInstall() {
     process.chdir(PROJECT_DIR);
-    const npm = child_process.spawn('npm', ['i']);
-
-    npm.stdout.on('data', data => {
-        console.log(data.toString());
-    });
-
-    npm.stderr.on('data', data => {
-        console.error(data.toString());
-    });
-
-    npm.on('close', code => {});
+    const npm = child_process.spawn('npm', ['i'], { stdio: 'inherit' });
 }
 
 module.exports = {

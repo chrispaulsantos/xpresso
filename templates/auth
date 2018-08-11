@@ -12,6 +12,12 @@ export class AuthRoutes {
         route.bootstrap();
     }
 
+    public static generateToken(): string {
+        return jwt.sign({}, SECRET, {
+            expiresIn: 60 * 60 * 24
+        });
+    }
+
     public static checkToken(
         req: Request,
         res: Response,
@@ -26,6 +32,7 @@ export class AuthRoutes {
             const decoded = jwt.verify(token, SECRET);
 
             if (decoded) {
+                {{refreshToken}}
                 next();
             } else {
                 return res.status(401).end();
@@ -54,12 +61,8 @@ export class AuthRoutes {
                 return res.status(400).json({ message: 'InvalidRequest' });
             }
 
-            const token = this.generateToken();
+            const token = AuthRoutes.generateToken();
             res.status(200).json({ token });
         });
-    }
-
-    private generateToken(): string {
-        return jwt.sign({}, SECRET);
     }
 }
