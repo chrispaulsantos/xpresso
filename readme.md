@@ -1,5 +1,79 @@
 # XPRESSO
+
 An express typescript generator to quickly develop REST API's
 
-### Note
-- Currently in its infancy. Work is being done to complete it. It can in it's current state generate working project
+![NpmVersion](https://img.shields.io/npm/v/xpresso.svg)
+![Travis (.org) branch](https://img.shields.io/travis/chrissantosproduction/xpresso/master.svg)
+![npm](https://img.shields.io/npm/dt/xpresso.svg)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/chrissantosproduction/xpresso.svg)
+![GitHub issues](https://img.shields.io/github/issues/chrissantosproduction/xpresso.svg)
+
+## Installation
+```bash
+    $ npm install -g xpresso
+```
+
+## Quick Start
+Install the cli tool
+```bash
+    $ npm install -g xpresso
+```
+
+**Note - by default the project sill connect to mongodb at mongodb://localhost:27017, so ensure a mongo server is running on your local machine, otherwise specify the desired mongo uri with the ``--dbUrl`` flag when running ``xpresso init``.**
+
+Navigate to the directory you wish to creat the project in, and run the init command, followed by the project name. A new folder will be created that follows the name you provide:
+```bash
+    $ cd projects && xpresso init comics
+```
+
+Navigate into the newly created directory and create a CRUD route with the ``generate`` command:
+```bash
+    $ cd comics && xpresso generate comic
+```
+
+Build the project with the ```npm``` command:
+```bash
+    $ npm run build
+```
+
+Start the server:
+```bash
+    $ npm start
+```
+
+Use any REST client to test out the generated API
+
+## Features
+- Generates typescript project
+- JWT authentication
+- Mongodb database
+- Mongoose model generation
+- Dynamic route creation
+- Custom logger with context id
+- Request logging with context id
+
+## Usage
+
+### commands
+```bash
+    $ xpresso
+        init | i [options] [name]
+        generate | g [options] [name]
+```
+
+### init
+```bash
+    $ xpresso init | i [options] [name]
+        -r, --repo [repo]        specify repository for the project
+        -s, --summary [summary]  set the summary of the project
+        -d, --dbUrl [dbUrl]      specify a development database url
+        --no-auth                disables jwt authentication
+        --no-refresh             disables rolling token refresh
+```
+
+### generate
+```bash
+    $ xpresso generate | g [options] [name]
+        -w, --websocket  add a websocket handler
+        --no-auth        disables jwt authentication for the route
+```
