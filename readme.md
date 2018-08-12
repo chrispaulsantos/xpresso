@@ -10,35 +10,35 @@ An express typescript generator to quickly develop REST API's
 
 ## Installation
 ```bash
-    $ npm install -g xpresso
+$ npm install -g xpresso
 ```
 
 ## Quick Start
 Install the cli tool
 ```bash
-    $ npm install -g xpresso
+$ npm install -g xpresso
 ```
 
 **Note - by default the project sill connect to mongodb at mongodb://localhost:27017, so ensure a mongo server is running on your local machine, otherwise specify the desired mongo uri with the ``--dbUrl`` flag when running ``xpresso init``.**
 
 Navigate to the directory you wish to creat the project in, and run the init command, followed by the project name. A new folder will be created that follows the name you provide:
 ```bash
-    $ cd projects && xpresso init comics
+$ cd projects && xpresso init comics
 ```
 
 Navigate into the newly created directory and create a CRUD route with the ``generate`` command:
 ```bash
-    $ cd comics && xpresso generate comic
+$ cd comics && xpresso generate comic
 ```
 
 Build the project with the ```npm``` command:
 ```bash
-    $ npm run build
+$ npm run build
 ```
 
 Start the server:
 ```bash
-    $ npm start
+$ npm start
 ```
 
 Use any REST client to test out the generated API
@@ -56,24 +56,24 @@ Use any REST client to test out the generated API
 
 ### commands
 ```bash
-    $ xpresso
-        init | i [options] [name]
-        generate | g [options] [name]
+$ xpresso
+    init | i [options] [name]
+    generate | g [options] [name]
 ```
 
 ### init
 ```bash
-    $ xpresso init | i [options] [name]
-        -r, --repo [repo]        specify repository for the project
-        -s, --summary [summary]  set the summary of the project
-        -d, --dbUrl [dbUrl]      specify a development database url
-        --no-auth                disables jwt authentication
-        --no-refresh             disables rolling token refresh
+$ xpresso init | i [options] [name]
+    -r, --repo [repo]        specify repository for the project
+    -s, --summary [summary]  set the summary of the project
+    -d, --dbUrl [dbUrl]      specify a development database url
+    --no-auth                disables jwt authentication
+    --no-refresh             disables rolling token refresh
 ```
 
 ### generate
 ```bash
-    $ xpresso generate | g [options] [name]
-        -w, --websocket  add a websocket handler
-        --no-auth        disables jwt authentication for the route
+$ xpresso generate | g [options] [name]
+    -w, --websocket  add a websocket handler
+    --no-auth        disables jwt authentication for the route
 ```
