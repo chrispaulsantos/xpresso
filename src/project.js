@@ -97,7 +97,7 @@ function generateFolderStructure(names, options) {
             let replacements = [
                 {
                     key: /{{databaseName}}/g,
-                    with: _.lowerCase(names.routeName)
+                    with: names.routeName.toLowerCase()
                 },
                 {
                     key: /{{databaseUrl}}/g,
