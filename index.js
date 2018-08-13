@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 program = require('commander');
 const path = require('path');
+const camel = require('camelcase');
 const util = require('./src/utility');
 const commands = require('./src/commands');
 
@@ -20,20 +21,25 @@ program
     .option('--no-auth', 'disables jwt authentication')
     .option('--no-refresh', 'disables rolling token refresh')
     .action((name, cmd) => {
+        let names = {
+            routeName: camel(name),
+            className: camel(name, { pascalCase: true })
+        };
+
         let auth = cmd.auth;
         let refresh = cmd.refresh;
         let dbUrl = cmd.dbUrl;
         let summary = cmd.summary;
         let repo = cmd.repo;
-        
+
         let options = {
             auth,
             refresh,
             dbUrl,
             summary,
             repo
-        }
-        commands.init(name, options);
+        };
+        commands.init(names, options);
     });
 
 program
@@ -44,20 +50,30 @@ program
     .option('--no-auth', 'disables jwt authentication')
     .option('--no-refresh', 'disables rolling token refresh')
     .action((name, cmd) => {
+        if (!name || name === '') {
+            console.error('Provide a project name');
+            process.exit(1);
+        }
+
+        let names = {
+            routeName: camel(name),
+            className: camel(name, { pascalCase: true })
+        };
+
         let auth = cmd.auth;
         let refresh = cmd.refresh;
         let dbUrl = cmd.dbUrl;
         let summary = cmd.summary;
         let repo = cmd.repo;
-        
+
         let options = {
             auth,
             refresh,
             dbUrl,
             summary,
             repo
-        }
-        commands.init(name, options);
+        };
+        commands.init(names, options);
     });
 
 program
@@ -65,9 +81,19 @@ program
     .option('-w, --websocket', 'add a websocket handler')
     .option('--no-auth', 'disables jwt authentication for the route')
     .action((name, cmd) => {
+        if (!name || name === '') {
+            console.error('Provide a project name');
+            process.exit(1);
+        }
+
+        let names = {
+            routeName: camel(name),
+            className: camel(name, { pascalCase: true })
+        };
+
         let auth = cmd.auth;
         let websocket = cmd.websocket;
-        commands.generate(name, {
+        commands.generate(names, {
             auth,
             websocket
         });
@@ -78,9 +104,19 @@ program
     .option('-w, --websocket', 'add a websocket handler')
     .option('--no-auth', 'disables jwt authentication for the route')
     .action((name, cmd) => {
+        if (!name || name === '') {
+            console.error('Provide a project name');
+            process.exit(1);
+        }
+
+        let names = {
+            routeName: camel(name),
+            className: camel(name, { pascalCase: true })
+        };
+
         let auth = cmd.auth;
         let websocket = cmd.websocket;
-        commands.generate(name, {
+        commands.generate(names, {
             auth,
             websocket
         });

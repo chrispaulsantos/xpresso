@@ -5,15 +5,14 @@ const _ = require('lodash');
 const crypto = require('crypto');
 
 /* GENERATE A NEW ROUTE */
-function generate(routeName, options) {
+function generate(names, options) {
     // Create the class name
-    const className = _.startCase(routeName);
 
     // Get the route template path
     let templatePath = path.join(TEMPLATE_DIR, 'route');
 
     // Get destination path
-    let destinationPath = path.join(SRC_DIR, `routes/${routeName}.ts`);
+    let destinationPath = path.join(SRC_DIR, `routes/${names.routeName}.ts`);
 
     // Check if the route already exists
     if (fs.existsSync(destinationPath)) {
@@ -28,11 +27,11 @@ function generate(routeName, options) {
     let replacements = [
         {
             key: /{{className}}/g,
-            with: className
+            with: names.className
         },
         {
             key: /{{routeName}}/g,
-            with: routeName
+            with: names.routeName
         },
         {
             key: /{{authImport}}/g,
@@ -52,7 +51,9 @@ function generate(routeName, options) {
             key: /{{websocketRoute}}/g,
             with: options.websocket
                 ? `
-                    this.app.ws('/${routeName}', (ws: WebSocket, req: Request) => {
+                    this.app.ws('/${
+                        names.routeName
+                    }', (ws: WebSocket, req: Request) => {
                         ws.on('message', msg => {
                             ws.send('I recieved your message: ' + msg);
                         });
@@ -64,22 +65,24 @@ function generate(routeName, options) {
 
     util.writeTemplate(template, destinationPath, replacements);
 
-    let content = `import { ${className}Routes } from './routes/${routeName}';`;
+    let content = `import { ${names.className}Routes } from './routes/${
+        names.routeName
+    }';`;
     util.updateFileByKey('index.ts', 'ENDIMPORTS', content);
-    content = `${className}Routes.initialize(app);`;
+    content = `${names.className}Routes.initialize(app);`;
     util.updateFileByKey('index.ts', 'ENDROUTES', content);
 
     /* * * * MODEL GENERATION * * * */
     // Get model template path
     templatePath = path.join(TEMPLATE_DIR, 'model');
-    destinationPath = path.join(SRC_DIR, `models/${routeName}.ts`);
+    destinationPath = path.join(SRC_DIR, `models/${names.routeName}.ts`);
 
     template = fs.readFileSync(templatePath).toString();
 
     replacements = [
         {
             key: /{{className}}/g,
-            with: className
+            with: names.className
         }
     ];
 
@@ -88,41 +91,50 @@ function generate(routeName, options) {
     /* * * * SCHEMA GENERATION * * * */
     // Get schema template path
     templatePath = path.join(TEMPLATE_DIR, 'schema');
-    destinationPath = path.join(SRC_DIR, `database/schema/${routeName}.ts`);
+    destinationPath = path.join(
+        SRC_DIR,
+        `database/schema/${names.routeName}.ts`
+    );
 
     template = fs.readFileSync(templatePath).toString();
 
     replacements = [
         {
             key: /{{schemaName}}/g,
-            with: className
+            with: names.className
         }
     ];
 
     util.writeTemplate(template, destinationPath, replacements);
 
     // Update imports
-    content = `import ${className}Schema from './schema/${routeName}';`;
+    content = `import ${names.className}Schema from './schema/${
+        names.routeName
+    }';`;
     util.updateFileByKey('database/index.ts', 'ENDSCHEMAIMPORTS', content);
-    content = `import { ${className}Document } from '../models/${routeName}';`;
+    content = `import { ${names.className}Document } from '../models/${
+        names.routeName
+    }';`;
     util.updateFileByKey('database/index.ts', 'ENDMODELIMPORTS', content);
-    content = `connection.model<${className}Document>('${routeName}', ${className}Schema);`;
+    content = `connection.model<${names.className}Document>('${
+        names.routeName
+    }', ${names.className}Schema);`;
     util.updateFileByKey('database/index.ts', 'ENDMODELS', content);
 
     /* * * * SERVICE GENERATION * * * */
     templatePath = path.join(TEMPLATE_DIR, 'service');
-    destinationPath = path.join(SRC_DIR, `services/${routeName}.ts`);
+    destinationPath = path.join(SRC_DIR, `services/${names.routeName}.ts`);
 
     template = fs.readFileSync(templatePath).toString();
 
     replacements = [
         {
             key: /{{className}}/g,
-            with: className
+            with: names.className
         },
         {
             key: /{{routeName}}/g,
-            with: routeName
+            with: names.routeName
         }
     ];
 
@@ -132,7 +144,7 @@ function generate(routeName, options) {
     templatePath = path.join(TEMPLATE_DIR, 'route.spec');
     destinationPath = path.join(
         PROJECT_DIR,
-        `tests/routes/${routeName}.unit.spec.ts`
+        `tests/routes/${names.routeName}.unit.spec.ts`
     );
 
     template = fs.readFileSync(templatePath).toString();
@@ -140,11 +152,11 @@ function generate(routeName, options) {
     replacements = [
         {
             key: /{{className}}/g,
-            with: className
+            with: names.className
         },
         {
             key: /{{routeName}}/g,
-            with: routeName
+            with: names.routeName
         }
     ];
 

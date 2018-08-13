@@ -3,11 +3,7 @@ const util = require('./utility');
 const project = require('./project');
 const route = require('./route');
 
-function init(name, options) {
-    if (!name || name === '') {
-        console.error('Provide a project name');
-        process.exit(1);
-    }
+function init(names, options) {
     if (options.dbUrl && !options.dbUrl.match(/^mongodb:\/\/.+/)) {
         console.log('Incorrect mongodb uri');
         process.exit(1);
@@ -18,7 +14,7 @@ function init(name, options) {
     }
 
     project
-        .generateFolderStructure(name, options)
+        .generateFolderStructure(names, options)
         .then(projectDir => {
             PROJECT_DIR = projectDir;
             SRC_DIR = path.join(PROJECT_DIR, 'src');
@@ -27,7 +23,7 @@ function init(name, options) {
                 route.auth(options);
             }
 
-            console.log('- Installing dependencies')
+            console.log('- Installing dependencies');
             project.npmInstall();
         })
         .catch(err => {
@@ -36,7 +32,7 @@ function init(name, options) {
         });
 }
 
-function generate(name, options) {
+function generate(names, options) {
     if (!util.isXpressoProject()) {
         console.error('Not inside an xpresso project');
         process.exit(1);
@@ -44,7 +40,7 @@ function generate(name, options) {
 
     PROJECT_DIR = util.getProjectDirectoryPath();
     SRC_DIR = path.join(PROJECT_DIR, 'src');
-    route.generate(name, options);
+    route.generate(names, options);
 }
 
 module.exports = {

@@ -30,6 +30,7 @@
     "uuid": "^3.3.2"
   },
   "dependencies": {
+    "camelcase": "^5.0.0",
     "commander": "^2.17.1",
     "lodash": "^4.17.10",
     "ncp": "^2.0.0",

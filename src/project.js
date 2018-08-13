@@ -6,7 +6,7 @@ const ncp = require('ncp');
 const util = require('./utility');
 
 /* GENERATE THE INITIAL PROJECT STRUCTURE */
-function generateFolderStructure(projectName, options) {
+function generateFolderStructure(names, options) {
     if (util.isXpressoProject()) {
         console.error('Cannot initialize a project inside another project');
         process.exit(1);
@@ -16,7 +16,7 @@ function generateFolderStructure(projectName, options) {
 
     console.log('- Creating project directory');
     // Make project directory
-    const projectDir = path.join(pwd, projectName);
+    const projectDir = path.join(pwd, names.routeName);
     console.log(projectDir);
     fs.mkdirSync(projectDir);
 
@@ -71,7 +71,7 @@ function generateFolderStructure(projectName, options) {
             let data = fs.readFileSync(packagePath);
 
             let json = JSON.parse(data.toString());
-            json.name = _.startCase(projectName);
+            json.name = _.lowerCase(names.routeName);
 
             // Check options
             if (options.repo && options.repo !== '') {
@@ -97,7 +97,7 @@ function generateFolderStructure(projectName, options) {
             let replacements = [
                 {
                     key: /{{databaseName}}/g,
-                    with: projectName.toLowerCase()
+                    with: _.lowerCase(names.routeName)
                 },
                 {
                     key: /{{databaseUrl}}/g,
