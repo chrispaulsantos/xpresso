@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const camel = require('camelcase');
 const prettier = require('prettier');
 
 function getXpressoDirectory() {
@@ -88,10 +89,18 @@ function writeTemplate(template, filePathToWrite, replacements) {
     console.log(filePathToWrite);
 }
 
+function generateNames(name) {
+    return {
+        routeName: camel(name),
+        className: camel(name, { pascalCase: true })
+    };
+}
+
 module.exports = {
     getXpressoDirectory,
     isXpressoProject,
     getProjectDirectoryPath,
     updateFileByKey,
-    writeTemplate
+    writeTemplate,
+    generateNames
 };

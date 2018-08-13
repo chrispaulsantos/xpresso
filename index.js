@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 program = require('commander');
 const path = require('path');
-const camel = require('camelcase');
 const util = require('./src/utility');
 const commands = require('./src/commands');
 
@@ -21,10 +20,12 @@ program
     .option('--no-auth', 'disables jwt authentication')
     .option('--no-refresh', 'disables rolling token refresh')
     .action((name, cmd) => {
-        let names = {
-            routeName: camel(name),
-            className: camel(name, { pascalCase: true })
-        };
+        if (!name || name === '') {
+            console.error('Provide a project name');
+            process.exit(1);
+        }
+
+        let names = util.generateNames(name);
 
         let auth = cmd.auth;
         let refresh = cmd.refresh;
@@ -55,10 +56,7 @@ program
             process.exit(1);
         }
 
-        let names = {
-            routeName: camel(name),
-            className: camel(name, { pascalCase: true })
-        };
+        let names = util.generateNames(name);
 
         let auth = cmd.auth;
         let refresh = cmd.refresh;
@@ -86,10 +84,7 @@ program
             process.exit(1);
         }
 
-        let names = {
-            routeName: camel(name),
-            className: camel(name, { pascalCase: true })
-        };
+        let names = util.generateNames(name);
 
         let auth = cmd.auth;
         let websocket = cmd.websocket;
@@ -109,10 +104,7 @@ program
             process.exit(1);
         }
 
-        let names = {
-            routeName: camel(name),
-            className: camel(name, { pascalCase: true })
-        };
+        let names = util.generateNames(name);
 
         let auth = cmd.auth;
         let websocket = cmd.websocket;

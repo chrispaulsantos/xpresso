@@ -5,3 +5,12 @@ test('isXpressoProject', () => {
 
     expect(isXpressoProject).toBeFalsy();
 });
+
+test('generateNames', () => {
+    const name = 'comics-Manager-porta';
+
+    const names = util.generateNames(name);
+
+    expect(names.routeName).toEqual('comicsManagerPortal');
+    expect(names.className).toEqual('ComicsManagerPortal');
+});

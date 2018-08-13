@@ -51,10 +51,12 @@ Use any REST client to test out the generated API
 - Dynamic route creation
 - Custom logger with context id
 - Request logging with context id
+- Tests with Jest
 
 ## Usage
 
 ### commands
+Base commands available from the CLI
 ```bash
 $ xpresso
     init | i [options] [name]
@@ -62,6 +64,7 @@ $ xpresso
 ```
 
 ### init
+Generates a new xpresso project
 ```bash
 $ xpresso init | i [options] [name]
     -r, --repo [repo]        specify repository for the project
@@ -72,6 +75,7 @@ $ xpresso init | i [options] [name]
 ```
 
 ### generate
+Generates a new api route with the prove
 ```bash
 $ xpresso generate | g [options] [name]
     -w, --websocket  add a websocket handler
