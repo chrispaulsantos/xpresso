@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const camel = require('camelcase');
+const changeCase = require('change-case');
 const prettier = require('prettier');
 
 function getXpressoDirectory() {
@@ -91,8 +91,9 @@ function writeTemplate(template, filePathToWrite, replacements) {
 
 function generateNames(name) {
     return {
-        routeName: camel(name),
-        className: camel(name, { pascalCase: true })
+        projectName: changeCase.paramCase(name),
+        routeName: changeCase.camelCase(name),
+        className: changeCase.pascalCase(name)
     };
 }
 

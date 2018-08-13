@@ -16,7 +16,7 @@ function generateFolderStructure(names, options) {
 
     console.log('- Creating project directory');
     // Make project directory
-    const projectDir = path.join(pwd, names.routeName);
+    const projectDir = path.join(pwd, names.projectName);
     console.log(projectDir);
     fs.mkdirSync(projectDir);
 
