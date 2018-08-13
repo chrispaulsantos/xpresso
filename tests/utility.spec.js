@@ -7,7 +7,7 @@ test('isXpressoProject', () => {
 });
 
 test('generateNames', () => {
-    const name = 'comics-Manager-porta';
+    const name = 'comics-Manager-portal';
 
     const names = util.generateNames(name);
 

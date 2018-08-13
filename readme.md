@@ -3,7 +3,7 @@
 An express typescript generator to quickly develop REST API's
 
 ![NpmVersion](https://img.shields.io/npm/v/xpresso.svg)
-![Travis (.org) branch](https://img.shields.io/travis/chrissantosproduction/xpresso/master.svg)
+![Travis (.org) branch](https://img.shields.io/travis/chrissantosproduction/xpresso/develop.svg)
 ![npm](https://img.shields.io/npm/dt/xpresso.svg)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/chrissantosproduction/xpresso.svg)
 ![GitHub issues](https://img.shields.io/github/issues/chrissantosproduction/xpresso.svg)
