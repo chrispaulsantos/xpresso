@@ -81,3 +81,6 @@ $ xpresso generate | g [options] [name]
     -w, --websocket  add a websocket handler
     --no-auth        disables jwt authentication for the route
 ```
+
+## Todo
+- Option to disable database
