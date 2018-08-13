@@ -7,7 +7,7 @@
     "test": "./node_modules/jest/bin/jest.js"
   },
   "author": "Chris Santos",
-  "repository": "chrissantosproduction/xpresso",
+  "repository": "chrispaulsantos/xpresso",
   "preferGlobal": true,
   "license": "MIT",
   "devDependencies": {
