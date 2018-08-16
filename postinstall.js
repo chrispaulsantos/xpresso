@@ -10,8 +10,8 @@ console.log(output);
 installPath = output.match(/^(\/.*)/g)[0];
 installPath = path.resolve(installPath);
 
-if (!fs.existsSync(installPath)) {
-    installPath = path.resolve('./');
+if (!fs.existsSync(path.join(installPath, 'node_modules', 'xpresso'))) {
+    installPath = process.cwd();
 }
 console.log(installPath);
 console.log(process.cwd());
