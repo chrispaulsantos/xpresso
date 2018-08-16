@@ -6,6 +6,7 @@ const path = require('path');
 const npm = spawn('npm', ['list', '-g', '--depth', '0']);
 let installPath = npm.output[1].toString();
 console.log(installPath);
+console.log(fs.readdirSync(installPath));
 installPath = installPath.match(/^(\/.*)/g)[0];
 installPath = path.resolve(installPath);
 
