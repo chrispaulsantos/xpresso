@@ -25,14 +25,7 @@ const config = {
     templateDir: path.join(xpressoDir, 'templates')
 };
 
-if (!fs.existsSync(xpressoDir)) {
-    fs.closeSync(fs.openSync(path.join(xpressoDir, 'config.json'), 'w'));
-}
-
 fs.writeFileSync(
     path.join(xpressoDir, 'config.json'),
-    prettier.format(JSON.stringify(config), { parser: 'json', tabWidth: 4 }),
-    {
-        flag: 'wx'
-    }
+    prettier.format(JSON.stringify(config), { parser: 'json', tabWidth: 4 })
 );
