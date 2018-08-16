@@ -84,3 +84,4 @@ $ xpresso generate | g [options] [name]
 
 ## Todo
 - Option to disable database
+- Firebase integration

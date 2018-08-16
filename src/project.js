@@ -116,7 +116,53 @@ function generateFolderStructure(names, options) {
 
 function npmInstall() {
     process.chdir(PROJECT_DIR);
-    const npm = child_process.spawn('npm', ['i'], { stdio: 'inherit' });
+    const npm = child_process.spawn(
+        /^win/.test(process.platform) ? 'npm.cmd' : 'npm',
+        ['i'],
+        { stdio: 'inherit' }
+    );
+}
+
+function enableFirebase() {
+    let output = '';
+
+    const npm = child_process.spawn(
+        /^win/.test(process.platform) ? 'npm.cmd' : 'cmd',
+        ['list', '-g', '--depth', '0']
+    );
+
+    npm.stdout.on('data', msg => {
+        output += msg.toString();
+    });
+
+    npm.on('close', code => {
+        console.log(output);
+        let version;
+
+        if (!(version = checkIsInstalled())) {
+            console.log('- missing firebase-tools: installing');
+            child_process.spawnSync(
+                /^win/.test(process.platform) ? 'npm.cmd' : 'cmd',
+                ['i', '-g', 'firebase-tools@latest'],
+                { stdio: 'inherit' }
+            );
+        } else {
+            console.log(`- found firebase-tools@${version}`);
+        }
+
+        process.chdir(PROJECT_DIR);
+        let firebase = child_process.spawnSync('firebase', ['login'], {
+            stdio: 'inherit'
+        });
+
+        firebase = child_process.spawnSync('firebase', ['init'], {
+            stdio: 'inherit'
+        });
+
+        function checkIsInstalled() {
+            return output.match(/(firebase-tools)@(.+)/)[2] || null;
+        }
+    });
 }
 
 module.exports = {

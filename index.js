@@ -17,6 +17,7 @@ program
     .option('-r, --repo [repo]', 'specify repository for the project')
     .option('-s, --summary [summary]', 'set the summary of the project')
     .option('-d, --dbUrl [dbUrl]', 'specify a development database url')
+    .option('--firebase', 'enable firebase deployment for functions')
     .option('--no-auth', 'disables jwt authentication')
     .option('--no-refresh', 'disables rolling token refresh')
     .action((name, cmd) => {
@@ -32,13 +33,15 @@ program
         let dbUrl = cmd.dbUrl;
         let summary = cmd.summary;
         let repo = cmd.repo;
+        let firebase = cmd.firebase;
 
         let options = {
             auth,
             refresh,
             dbUrl,
             summary,
-            repo
+            repo,
+            firebase
         };
         commands.init(names, options);
     });
@@ -48,6 +51,7 @@ program
     .option('-r, --repo [repo]', 'specify repository for the project')
     .option('-s, --summary [summary]', 'set the summary of the project')
     .option('-d, --dbUrl [dbUrl]', 'specify a development database url')
+    .option('--firebase', 'enable firebase deployment for functions')
     .option('--no-auth', 'disables jwt authentication')
     .option('--no-refresh', 'disables rolling token refresh')
     .action((name, cmd) => {
@@ -63,13 +67,15 @@ program
         let dbUrl = cmd.dbUrl;
         let summary = cmd.summary;
         let repo = cmd.repo;
+        let firebase = cmd.firebase;
 
         let options = {
             auth,
             refresh,
             dbUrl,
             summary,
-            repo
+            repo,
+            firebase
         };
         commands.init(names, options);
     });
@@ -113,5 +119,9 @@ program
             websocket
         });
     });
+
+program.command('test').action(() => {
+    commands.test();
+});
 
 program.parse(process.argv);

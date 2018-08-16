@@ -25,6 +25,10 @@ function init(names, options) {
 
             console.log('- Installing dependencies');
             project.npmInstall();
+
+            if (options.firebase) {
+                project.enableFirebase();
+            }
         })
         .catch(err => {
             console.error(err);
@@ -43,7 +47,12 @@ function generate(names, options) {
     route.generate(names, options);
 }
 
+function test() {
+    project.enableFirebase();
+}
+
 module.exports = {
     init,
-    generate
+    generate,
+    test
 };
