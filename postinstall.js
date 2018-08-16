@@ -10,13 +10,16 @@ console.log(output);
 installPath = output.match(/^(\/.*)/g)[0];
 installPath = path.resolve(installPath);
 
+let xpressoDir;
 if (!fs.existsSync(path.join(installPath, 'node_modules', 'xpresso'))) {
     installPath = process.cwd();
+    xpressoDir = installPath;
+} else {
+    xpressoDir = path.join(installPath, 'node_modules', 'xpresso');
 }
 console.log(installPath);
 console.log(process.cwd());
 
-const xpressoDir = path.join(installPath, 'node_modules', 'xpresso');
 const config = {
     xpressoDir,
     templateDir: path.join(xpressoDir, 'templates')
