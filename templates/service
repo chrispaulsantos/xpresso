@@ -18,7 +18,7 @@ export class {{className}}Service {
         try {
             {{routeName}}s = await this.{{routeName}}Model.find({});
         } catch (e) {
-            LOGGER.error(e);
+            LOGGER.error(`${context.get(id)} - ${e}`);
             throw e;
         }
 

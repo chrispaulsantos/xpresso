@@ -2,14 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const changeCase = require('change-case');
 const prettier = require('prettier');
+const config = require('../config');
 
 function getXpressoDirectory() {
-    let dir = path.join(
-        process.argv[1],
-        '..',
-        '..',
-        'lib/node_modules/xpresso'
-    );
+    let dir = path.join(config.xpressoDir);
     return dir;
 }
 
