@@ -1,5 +1,5 @@
 const spawn = require('child_process').spawnSync;
-const writeFile = require('fs').writeFileSync;
+const fs = require('fs');
 const prettier = require('prettier');
 const path = require('path');
 
@@ -14,7 +14,12 @@ const config = {
     templateDir: path.join(xpressoDir, 'templates')
 };
 
-writeFile(
+console.log(config.xpressoDir);
+console.log(config.templateDir);
+
+console.log(fs.existsSync(xpressoDir));
+
+fs.writeFile(
     path.join(xpressoDir, 'config.json'),
     prettier.format(JSON.stringify(config), { parser: 'json', tabWidth: 4 }),
     {
