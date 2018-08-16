@@ -5,14 +5,16 @@ const path = require('path');
 
 const npm = spawn('npm', ['list', '-g', '--depth', '0']);
 
-let installPath = npm.output[1].toString();
-installPath = installPath.match(/^(\/.*)/g)[0];
+let output = npm.output[1].toString();
+console.log(output);
+installPath = output.match(/^(\/.*)/g)[0];
 installPath = path.resolve(installPath);
 
 if (!fs.existsSync(installPath)) {
     installPath = path.resolve('./');
 }
 console.log(installPath);
+console.log(process.cwd());
 
 const xpressoDir = path.join(installPath, 'node_modules', 'xpresso');
 const config = {
