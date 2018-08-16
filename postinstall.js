@@ -4,6 +4,7 @@ const prettier = require('prettier');
 const path = require('path');
 
 const npm = spawn('npm', ['list', '-g', '--depth', '0']);
+consolelog(npm.output);
 let installPath = npm.output[1].toString();
 console.log(installPath);
 console.log(__dirname);
