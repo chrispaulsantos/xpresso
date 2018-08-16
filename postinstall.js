@@ -17,8 +17,7 @@ if (!fs.existsSync(path.join(installPath, 'node_modules', 'xpresso'))) {
 } else {
     xpressoDir = path.join(installPath, 'node_modules', 'xpresso');
 }
-console.log(installPath);
-console.log(process.cwd());
+console.log(xpressoDir);
 
 const config = {
     xpressoDir,
