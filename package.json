@@ -4,7 +4,8 @@
   "description": "A typescript express generator for fast, scalable REST APIs",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/jest/bin/jest.js"
+    "test": "./node_modules/jest/bin/jest.js",
+    "postinstall": "node postinstall.js"
   },
   "author": "Chris Santos",
   "repository": "chrispaulsantos/xpresso",
