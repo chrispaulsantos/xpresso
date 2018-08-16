@@ -17,7 +17,9 @@ const config = {
 console.log(config.xpressoDir);
 console.log(config.templateDir);
 
-console.log(fs.existsSync(xpressoDir));
+if (!fs.existsSync(xpressoDir)) {
+    fs.closeSync(fs.openSync(path.join(xpressoDir, 'config.json'), 'w'));
+}
 
 fs.writeFileSync(
     path.join(xpressoDir, 'config.json'),
