@@ -16,5 +16,8 @@ const config = {
 
 writeFile(
     path.join(xpressoDir, 'config.json'),
-    prettier.format(JSON.stringify(config), { parser: 'json', tabWidth: 4 })
+    prettier.format(JSON.stringify(config), { parser: 'json', tabWidth: 4 }),
+    {
+        flag: 'wx'
+    }
 );
