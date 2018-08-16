@@ -19,7 +19,7 @@ console.log(config.templateDir);
 
 console.log(fs.existsSync(xpressoDir));
 
-fs.writeFile(
+fs.writeFileSync(
     path.join(xpressoDir, 'config.json'),
     prettier.format(JSON.stringify(config), { parser: 'json', tabWidth: 4 }),
     {
