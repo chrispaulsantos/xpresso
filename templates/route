@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { Request, Response } from 'express';
+import { Request, Response, Router } from 'express';
 import { Logger } from '../services/logger';
 {{websocketImport}}
 
@@ -11,18 +11,23 @@ import { {{className}} } from '../models/{{routeName}}';
 const LOGGER = Logger.getLogger('{{className}}Routes');
 
 export class {{className}}Routes {
-    public static initialize(app: Application): void {
+    public static initialize(): Router {
         LOGGER.info('Initializing {{className}}Routes');
-        let route: {{className}}Routes = new this(app);
-        route.bootstrap();
+        let routes: {{className}}Routes = new this(Router());
+        routes.bootstrap();
+        return routes.getRouter();
     }
 
-    private app: Application;
+    private readonly router: Router;
     private {{routeName}}Service: {{className}}Service;
 
-    constructor(app: Application) {
-        this.app = app;
+    constructor(router: Router) {
+        this.router = router;
         this.{{routeName}}Service = new {{className}}Service();
+    }
+
+    public getRouter(): Router {
+        return this.router;
     }
 
     private bootstrap(): void {
@@ -30,20 +35,20 @@ export class {{className}}Routes {
 
         {{authMiddleware}}
 
-        this.app.get('/{{routeName}}', async (req: Request, res: Response) => {
+        this.router.get('/{{routeName}}', async (req: Request, res: Response) => {
             const {{routeName}}s: {{className}}[] = await this.{{routeName}}Service.getAll();
             res.status(200).json({ list: {{routeName}}s });
         })
-        this.app.post('/{{routeName}}', async (req: Request, res: Response) => {
+        this.router.post('/{{routeName}}', async (req: Request, res: Response) => {
             res.status(200).end();
         })
-        this.app.get('/{{routeName}}/:id', async (req: Request, res: Response) => {
+        this.router.get('/{{routeName}}/:id', async (req: Request, res: Response) => {
             res.status(200).end();
         })
-        this.app.put('/{{routeName}}/:id', async (req: Request, res: Response) => {
+        this.router.put('/{{routeName}}/:id', async (req: Request, res: Response) => {
             res.status(200).end();
         })
-        this.app.delete('/{{routeName}}/:id', async (req: Request, res: Response) => {
+        this.router.delete('/{{routeName}}/:id', async (req: Request, res: Response) => {
             res.status(200).end();
         })
     }

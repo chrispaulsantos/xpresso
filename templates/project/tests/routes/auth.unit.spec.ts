@@ -9,9 +9,11 @@ test('generateToken - generates a new token', () => {
 
 test('intialize - contains routes', () => {
     const app = express();
-    AuthRoutes.initialize(app);
+    app.use(AuthRoutes.initialize());
 
-    const routes = app._router.stack.map((layer: any) => {
+    const routes = app._router.stack[
+        app._router.stack.length - 1
+    ].handle.stack.map((layer: any) => {
         return layer.route
             ? {
                   path: layer.route.path,

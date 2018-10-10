@@ -1,4 +1,4 @@
-import { Application, NextFunction, Request, Response } from 'express';
+import { Application, NextFunction, Request, Response, Router } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { Logger } from '../services/logger';
 
@@ -6,10 +6,11 @@ const LOGGER = Logger.getLogger('AuthRoutes');
 const SECRET = '{{SECRET_KEY}}';
 
 export class AuthRoutes {
-    public static initialize(app: Application): void {
+    public static initialize(): Router {
         LOGGER.info('Initializing AuthRoutes');
-        let route: AuthRoutes = new this(app);
-        route.bootstrap();
+        let routes: AuthRoutes = new this(Router());
+        routes.bootstrap();
+        return routes.getRouter();
     }
 
     public static generateToken(): string {
@@ -43,14 +44,18 @@ export class AuthRoutes {
         }
     }
 
-    private app: Application;
+    private readonly router: Router;
 
-    constructor(app: Application) {
-        this.app = app;
+    constructor(router: Router) {
+        this.router = router;
+    }
+
+    public getRouter(): Router {
+        return this.router;
     }
 
     private bootstrap(): void {
-        this.app.get('/login', (req: Request, res: Response) => {
+        this.router.get('/login', (req: Request, res: Response) => {
             const username = req.query.username;
             const password = req.query.password;
 
