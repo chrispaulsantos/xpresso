@@ -39,7 +39,7 @@ function generate(names, options) {
         },
         {
             key: /{{authMiddleware}}/g,
-            with: options.auth ? `this.app.use(AuthRoutes.checkToken);` : ''
+            with: options.auth ? `this.router.use(AuthRoutes.checkToken);` : ''
         },
         {
             key: /{{websocketImport}}/g,
@@ -69,7 +69,7 @@ function generate(names, options) {
         names.routeName
     }';`;
     util.updateFileByKey('index.ts', 'ENDIMPORTS', content);
-    content = `${names.className}Routes.initialize(app);`;
+    content = `app.use(${names.className}Routes.initialize());`;
     util.updateFileByKey('index.ts', 'ENDROUTES', content);
 
     /* * * * MODEL GENERATION * * * */
@@ -193,7 +193,7 @@ function auth(options) {
 
     let content = `import { AuthRoutes } from './routes/auth';`;
     util.updateFileByKey('index.ts', 'ENDIMPORTS', content);
-    content = `AuthRoutes.initialize(app);`;
+    content = `app.use(AuthRoutes.initialize());`;
     util.updateFileByKey('index.ts', 'ENDROUTES', content);
 }
 

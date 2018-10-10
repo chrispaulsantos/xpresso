@@ -11,9 +11,11 @@ beforeAll(() => {
 
 test('initialize - contains routes', () => {
     const app = ws(express()).app;
-    {{className}}Routes.initialize(app);
+    app.use({{className}}Routes.initialize());
 
-    const routes = app._router.stack.map(
+    const routes = app._router.stack[
+        app._router.stack.length - 1
+    ].handle.stack.map(
         (layer:any) => {
             return layer.route 
                 ? {
