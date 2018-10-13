@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const changeCase = require('change-case');
+const pluralize = require('pluralize');
 const prettier = require('prettier');
 const config = require('../config');
 
@@ -86,10 +87,19 @@ function writeTemplate(template, filePathToWrite, replacements) {
 }
 
 function generateNames(name) {
+    const singular = pluralize.singular(name);
+    const plural = pluralize.plural(name);
+
+    // Input = flightAttendant
     return {
-        projectName: changeCase.paramCase(name),
-        routeName: changeCase.camelCase(name),
-        className: changeCase.pascalCase(name)
+        projectName: changeCase.paramCase(name), // flight-attendant
+        projectPackageName: changeCase.camelCase(name), // flightAttendant
+        camelSingular: changeCase.camelCase(singular), // flightAttendent
+        camelPlural: changeCase.camelCase(plural), // flightAttendents
+        pascalSingular: changeCase.pascalCase(singular), // FlightAttendent
+        pascalPlural: changeCase.pascalCase(plural), // FlightAttendents
+        paramSingular: changeCase.paramCase(singular), // flight-attemdant
+        paramPlural: changeCase.paramCase(plural) // flight-attendants
     };
 }
 

@@ -35,6 +35,7 @@
     "commander": "^2.17.1",
     "lodash": "^4.17.10",
     "ncp": "^2.0.0",
+    "pluralize": "^7.0.0",
     "prettier": "^1.14.2"
   },
   "bin": {

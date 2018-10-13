@@ -1,27 +1,40 @@
 import { Model, model } from 'mongoose';
-import { {{className}}Document, {{className}} } from '../models/{{routeName}}';
+import { {{pascalSingular}}Document, {{pascalSingular}} } from '../models/{{paramSingular}}';
 import { Logger } from './logger';
 const context = require('express-cls-hooked')
 
-const LOGGER = Logger.getLogger('{{className}}Service');
+const LOGGER = Logger.getLogger('{{pascalSingular}}Service');
 
-export class {{className}}Service {
-    private {{routeName}}Model: Model<{{className}}Document>;
+export class {{pascalPlural}}Service {
+    private {{camelSingular}}Model: Model<{{pascalSingular}}Document>;
 
     constructor() {
-        this.{{routeName}}Model = model('{{routeName}}');
+        this.{{camelSingular}}Model = model('{{paramPlural}}');
     }
 
-    public async getAll(): Promise<{{className}}[]> {
-        let {{routeName}}s: {{className}}[] = [];
+    public async getAll(): Promise<{{pascalSingular}}[]> {
+        let {{camelPlural}}: {{pascalSingular}}[] = [];
 
         try {
-            {{routeName}}s = await this.{{routeName}}Model.find({});
+            {{camelPlural}} = await this.{{camelSingular}}Model.find({});
         } catch (e) {
             LOGGER.error(`${context.get('id')} - ${e}`);
             throw e;
         }
 
-        return {{routeName}}s;
+        return {{camelPlural}};
+    }
+
+    public async create({{camelSingular}}: {{pascalSingular}}): Promise<{{pascalSingular}}> {
+        let created{{pascalSingular}}: {{pascalSingular}} = null;
+
+        try {
+            created{{pascalSingular}} = await this.{{camelSingular}}Model.create({{camelSingular}});
+        } catch (e) {
+            LOGGER.error(e);
+            throw e;
+        }
+
+        return created{{pascalSingular}};
     }
 }
