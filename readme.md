@@ -19,7 +19,7 @@ Install the cli tool
 $ npm install -g xpresso
 ```
 
-**Note - by default the project sill connect to mongodb at mongodb://localhost:27017, so ensure a mongo server is running on your local machine, otherwise specify the desired mongo uri with the ``--dbUrl`` flag when running ``xpresso init``.**
+**Note - by default the project will connect to mongodb at mongodb://localhost:27017, so ensure a mongo server is running on your local machine, otherwise specify the desired mongo uri with the ``--dbUrl`` flag when running ``xpresso init``.**
 
 Navigate to the directory you wish to creat the project in, and run the init command, followed by the project name. A new folder will be created that follows the name you provide:
 ```bash
@@ -84,4 +84,6 @@ $ xpresso generate | g [options] [name]
 
 ## Todo
 - Option to disable database
-- Firebase integration
+- Passport integration
+- Restructure to host front end code base
+- Serve from backend on production build
