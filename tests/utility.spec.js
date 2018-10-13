@@ -12,6 +12,5 @@ test('generateNames', () => {
     const names = util.generateNames(name);
 
     expect(names.projectName).toEqual('comics-manager-portal');
-    expect(names.routeName).toEqual('comicsManagerPortal');
-    expect(names.className).toEqual('ComicsManagerPortal');
+    expect(names.projectPackageName).toEqual('comicsManagerPortal');
 });
