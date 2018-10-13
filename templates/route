@@ -5,25 +5,25 @@ import { Logger } from '../services/logger';
 
 {{authImport}}
 
-import { {{className}}Service } from '../services/{{routeName}}';
-import { {{className}} } from '../models/{{routeName}}';
+import { {{pascalPlural}}Service } from '../services/{{paramSingular}}';
+import { {{pascalSingular}} } from '../models/{{paramSingular}}';
 
-const LOGGER = Logger.getLogger('{{className}}Routes');
+const LOGGER = Logger.getLogger('{{pascalSingular}}Routes');
 
-export class {{className}}Routes {
-    public static initialize(): Router {
-        LOGGER.info('Initializing {{className}}Routes');
-        let routes: {{className}}Routes = new this(Router());
+export class {{pascalSingular}}Routes {
+    public static routes(): Router {
+        LOGGER.info('Getting {{paramSingular}} routes');
+        let routes: {{pascalSingular}}Routes = new this(Router());
         routes.bootstrap();
         return routes.getRouter();
     }
 
     private readonly router: Router;
-    private {{routeName}}Service: {{className}}Service;
+    private {{camelPlural}}Service: {{pascalPlural}}Service;
 
     constructor(router: Router) {
         this.router = router;
-        this.{{routeName}}Service = new {{className}}Service();
+        this.{{camelPlural}}Service = new {{pascalPlural}}Service();
     }
 
     public getRouter(): Router {
@@ -35,20 +35,29 @@ export class {{className}}Routes {
 
         {{authMiddleware}}
 
-        this.router.get('/{{routeName}}', async (req: Request, res: Response) => {
-            const {{routeName}}s: {{className}}[] = await this.{{routeName}}Service.getAll();
-            res.status(200).json({ list: {{routeName}}s });
+        this.router.get('/{{paramPlural}}', async (req: Request, res: Response) => {
+            const {{camelPlural}}: {{pascalSingular}}[] = await this.{{camelPlural}}Service.getAll();
+            res.status(200).json({ {{camelPlural}} });
         })
-        this.router.post('/{{routeName}}', async (req: Request, res: Response) => {
+        this.router.post('/{{paramPlural}}', async (req: Request, res: Response) => {
+            const {{camelSingular}} = req.body as {{pascalSingular}};
+            let created{{pascalSingular}}: {{pascalSingular}} = null;
+
+            try {
+                created{{pascalSingular}} = await this.{{camelPlural}}Service.create({{camelSingular}})
+            } catch (e) {
+                return res.status(500).json(e);
+            }
+
             res.status(200).end();
         })
-        this.router.get('/{{routeName}}/:id', async (req: Request, res: Response) => {
+        this.router.get('/{{paramPlural}}/:id', async (req: Request, res: Response) => {
             res.status(200).end();
         })
-        this.router.put('/{{routeName}}/:id', async (req: Request, res: Response) => {
+        this.router.put('/{{paramPlural}}/:id', async (req: Request, res: Response) => {
             res.status(200).end();
         })
-        this.router.delete('/{{routeName}}/:id', async (req: Request, res: Response) => {
+        this.router.delete('/{{paramPlural}}/:id', async (req: Request, res: Response) => {
             res.status(200).end();
         })
     }

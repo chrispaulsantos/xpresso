@@ -71,7 +71,7 @@ function generateFolderStructure(names, options) {
             let data = fs.readFileSync(packagePath);
 
             let json = JSON.parse(data.toString());
-            json.name = names.routeName.toLowerCase();
+            json.name = names.projectPackageName.toLowerCase();
 
             // Check options
             if (options.repo && options.repo !== '') {
@@ -97,7 +97,7 @@ function generateFolderStructure(names, options) {
             let replacements = [
                 {
                     key: /{{databaseName}}/g,
-                    with: names.routeName.toLowerCase()
+                    with: names.projectPackageName.toLowerCase()
                 },
                 {
                     key: /{{databaseUrl}}/g,

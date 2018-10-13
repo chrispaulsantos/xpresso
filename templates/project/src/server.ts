@@ -15,10 +15,10 @@ export class Server {
     }
 
     private bootstrap(app: Application): void {
-        app.use(context.middleware);
-        app.use(this.generateRequestId);
         app.use(express.json());
         app.use(express.urlencoded({ extended: false }));
+        app.use(context.middleware);
+        app.use(this.generateRequestId);
         app.use(RequestLogger.getLogger());
     }
 

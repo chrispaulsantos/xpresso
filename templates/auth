@@ -6,8 +6,8 @@ const LOGGER = Logger.getLogger('AuthRoutes');
 const SECRET = '{{SECRET_KEY}}';
 
 export class AuthRoutes {
-    public static initialize(): Router {
-        LOGGER.info('Initializing AuthRoutes');
+    public static routes(): Router {
+        LOGGER.info('Getting auth routes');
         let routes: AuthRoutes = new this(Router());
         routes.bootstrap();
         return routes.getRouter();

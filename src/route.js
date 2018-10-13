@@ -7,12 +7,41 @@ const crypto = require('crypto');
 /* GENERATE A NEW ROUTE */
 function generate(names, options) {
     // Create the class name
+    const GENERIC_NAME_REPLACEMENTS = [
+        {
+            key: /{{pascalSingular}}/g,
+            with: names.pascalSingular
+        },
+        {
+            key: /{{pascalPlural}}/g,
+            with: names.pascalPlural
+        },
+        {
+            key: /{{camelSingular}}/g,
+            with: names.camelSingular
+        },
+        {
+            key: /{{camelPlural}}/g,
+            with: names.camelPlural
+        },
+        {
+            key: /{{paramSingular}}/g,
+            with: names.paramSingular
+        },
+        {
+            key: /{{paramPlural}}/g,
+            with: names.paramPlural
+        }
+    ];
 
     // Get the route template path
     let templatePath = path.join(TEMPLATE_DIR, 'route');
 
     // Get destination path
-    let destinationPath = path.join(SRC_DIR, `routes/${names.routeName}.ts`);
+    let destinationPath = path.join(
+        SRC_DIR,
+        `routes/${names.paramSingular}.ts`
+    );
 
     // Check if the route already exists
     if (fs.existsSync(destinationPath)) {
@@ -24,15 +53,7 @@ function generate(names, options) {
     let template = fs.readFileSync(templatePath).toString();
 
     // Create replacements
-    let replacements = [
-        {
-            key: /{{className}}/g,
-            with: names.className
-        },
-        {
-            key: /{{routeName}}/g,
-            with: names.routeName
-        },
+    let replacements = GENERIC_NAME_REPLACEMENTS.concat([
         {
             key: /{{authImport}}/g,
             with: options.auth ? `import { AuthRoutes } from './auth';` : ''
@@ -52,7 +73,7 @@ function generate(names, options) {
             with: options.websocket
                 ? `
                     this.app.ws('/${
-                        names.routeName
+                        names.camelSingular
                     }', (ws: WebSocket, req: Request) => {
                         ws.on('message', msg => {
                             ws.send('I recieved your message: ' + msg);
@@ -61,30 +82,25 @@ function generate(names, options) {
                 `
                 : ''
         }
-    ];
+    ]);
 
     util.writeTemplate(template, destinationPath, replacements);
 
-    let content = `import { ${names.className}Routes } from './routes/${
-        names.routeName
+    let content = `import { ${names.pascalSingular}Routes } from './routes/${
+        names.paramSingular
     }';`;
     util.updateFileByKey('index.ts', 'ENDIMPORTS', content);
-    content = `app.use(${names.className}Routes.initialize());`;
+    content = `app.use(${names.pascalSingular}Routes.routes());`;
     util.updateFileByKey('index.ts', 'ENDROUTES', content);
 
     /* * * * MODEL GENERATION * * * */
     // Get model template path
     templatePath = path.join(TEMPLATE_DIR, 'model');
-    destinationPath = path.join(SRC_DIR, `models/${names.routeName}.ts`);
+    destinationPath = path.join(SRC_DIR, `models/${names.paramSingular}.ts`);
 
     template = fs.readFileSync(templatePath).toString();
 
-    replacements = [
-        {
-            key: /{{className}}/g,
-            with: names.className
-        }
-    ];
+    replacements = GENERIC_NAME_REPLACEMENTS;
 
     util.writeTemplate(template, destinationPath, replacements);
 
@@ -93,50 +109,36 @@ function generate(names, options) {
     templatePath = path.join(TEMPLATE_DIR, 'schema');
     destinationPath = path.join(
         SRC_DIR,
-        `database/schema/${names.routeName}.ts`
+        `database/schema/${names.paramSingular}.ts`
     );
 
     template = fs.readFileSync(templatePath).toString();
 
-    replacements = [
-        {
-            key: /{{schemaName}}/g,
-            with: names.className
-        }
-    ];
+    replacements = GENERIC_NAME_REPLACEMENTS;
 
     util.writeTemplate(template, destinationPath, replacements);
 
     // Update imports
-    content = `import ${names.className}Schema from './schema/${
-        names.routeName
+    content = `import ${names.pascalSingular}Schema from './schema/${
+        names.paramSingular
     }';`;
     util.updateFileByKey('database/index.ts', 'ENDSCHEMAIMPORTS', content);
-    content = `import { ${names.className}Document } from '../models/${
-        names.routeName
+    content = `import { ${names.pascalSingular}Document } from '../models/${
+        names.paramSingular
     }';`;
     util.updateFileByKey('database/index.ts', 'ENDMODELIMPORTS', content);
-    content = `connection.model<${names.className}Document>('${
-        names.routeName
-    }', ${names.className}Schema);`;
+    content = `connection.model<${names.pascalSingular}Document>('${
+        names.paramPlural
+    }', ${names.pascalSingular}Schema);`;
     util.updateFileByKey('database/index.ts', 'ENDMODELS', content);
 
     /* * * * SERVICE GENERATION * * * */
     templatePath = path.join(TEMPLATE_DIR, 'service');
-    destinationPath = path.join(SRC_DIR, `services/${names.routeName}.ts`);
+    destinationPath = path.join(SRC_DIR, `services/${names.paramSingular}.ts`);
 
     template = fs.readFileSync(templatePath).toString();
 
-    replacements = [
-        {
-            key: /{{className}}/g,
-            with: names.className
-        },
-        {
-            key: /{{routeName}}/g,
-            with: names.routeName
-        }
-    ];
+    replacements = GENERIC_NAME_REPLACEMENTS;
 
     util.writeTemplate(template, destinationPath, replacements);
 
@@ -144,21 +146,12 @@ function generate(names, options) {
     templatePath = path.join(TEMPLATE_DIR, 'route.spec');
     destinationPath = path.join(
         PROJECT_DIR,
-        `tests/routes/${names.routeName}.unit.spec.ts`
+        `tests/routes/${names.paramSingular}.unit.spec.ts`
     );
 
     template = fs.readFileSync(templatePath).toString();
 
-    replacements = [
-        {
-            key: /{{className}}/g,
-            with: names.className
-        },
-        {
-            key: /{{routeName}}/g,
-            with: names.routeName
-        }
-    ];
+    replacements = GENERIC_NAME_REPLACEMENTS;
 
     util.writeTemplate(template, destinationPath, replacements);
 }
@@ -193,7 +186,7 @@ function auth(options) {
 
     let content = `import { AuthRoutes } from './routes/auth';`;
     util.updateFileByKey('index.ts', 'ENDIMPORTS', content);
-    content = `app.use(AuthRoutes.initialize());`;
+    content = `app.use(AuthRoutes.routes());`;
     util.updateFileByKey('index.ts', 'ENDROUTES', content);
 }
 
