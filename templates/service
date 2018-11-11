@@ -18,7 +18,7 @@ export class {{pascalPlural}}Service {
         try {
             {{camelPlural}} = await this.{{camelSingular}}Model.find({});
         } catch (e) {
-            LOGGER.error(`${context.get('id')} - ${e}`);
+            LOGGER.error(e);
             throw e;
         }
 
