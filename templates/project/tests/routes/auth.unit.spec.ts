@@ -1,5 +1,5 @@
 import * as express from 'express';
-import { AuthRoutes } from '../../src/routes/auth';
+import { AuthRoutes } from '../../src/routes/auth.routes';
 
 test('generateToken - generates a new token', () => {
     expect(AuthRoutes.generateToken()).toMatch(

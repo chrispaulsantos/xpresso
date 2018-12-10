@@ -5,7 +5,7 @@ import { Logger } from '../services/logger';
 
 {{authImport}}
 
-import { {{pascalPlural}}Service } from '../services/{{paramSingular}}';
+import { {{pascalPlural}}Service } from '../services/{{paramSingular}}.service';
 import { {{pascalSingular}} } from '../models/{{paramSingular}}';
 
 const LOGGER = Logger.getLogger('{{pascalSingular}}Routes');
