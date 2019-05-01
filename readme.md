@@ -84,6 +84,5 @@ $ xpresso generate | g [options] [name]
 
 ## Todo
 - Option to disable database
+- Option to choose SQL or Mongo
 - Passport integration
-- Restructure to host front end code base
-- Serve from backend on production build
