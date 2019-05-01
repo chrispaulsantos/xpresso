@@ -53,11 +53,11 @@ function generate(names, options) {
     let replacements = GENERIC_NAME_REPLACEMENTS.concat([
         {
             key: /{{authImport}}/g,
-            with: options.auth ? `import { AuthRoutes } from './auth.routes';` : ''
+            with: options.auth ? `import { AuthService } from '../services/auth.service';` : ''
         },
         {
             key: /{{authMiddleware}}/g,
-            with: options.auth ? `this.router.use(AuthRoutes.checkToken);` : ''
+            with: options.auth ? `this.router.use(AuthService.checkToken);` : ''
         },
         {
             key: /{{websocketImport}}/g,
@@ -146,9 +146,9 @@ function auth(options) {
     // Generate 512-bit string
     const secret = crypto.randomBytes(32).toString('hex');
 
-    console.log('- Updating auth route');
-    const templatePath = path.join(TEMPLATE_DIR, 'auth');
-    const destinationPath = path.join(SRC_DIR, 'routes/auth.routes.ts');
+    console.log('- Updating auth service');
+    let templatePath = path.join(TEMPLATE_DIR, 'auth.service');
+    let destinationPath = path.join(SRC_DIR, 'services/auth.service.ts');
 
     let template = fs.readFileSync(templatePath).toString();
     let replacements = [
@@ -160,12 +160,21 @@ function auth(options) {
             key: /{{refreshToken}}/g,
             with: options.refresh
                 ? `
-                    let refreshToken: string = AuthRoutes.generateToken();
+                    let refreshToken: string = AuthService.generateToken({});
                     res.setHeader('x-api-token', refreshToken);
                 `
                 : ''
         }
     ];
+
+    util.writeTemplate(template, destinationPath, replacements);
+
+    console.log('- Updating auth route');
+    templatePath = path.join(TEMPLATE_DIR, 'auth.routes');
+    destinationPath = path.join(SRC_DIR, 'routes/auth.routes.ts');
+
+    template = fs.readFileSync(templatePath).toString();
+    replacements = [];
 
     util.writeTemplate(template, destinationPath, replacements);
 

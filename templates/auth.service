@@ -1,0 +1,40 @@
+import { NextFunction, Request, Response } from 'express';
+import * as jwt from 'jsonwebtoken';
+import { Logger } from '../services/logger';
+import { JWTPayload } from '../models/jwt-payload';
+
+const LOGGER = Logger.getLogger('AuthService');
+const SECRET = '{{SECRET_KEY}}';
+
+export class AuthService {
+    public static generateToken(payload: JWTPayload): string {
+        return jwt.sign(payload, SECRET, {
+            expiresIn: 60 * 60 * 24
+        });
+    }
+
+    public static checkToken(
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): void {
+        const token = req.header('x-api-token');
+        if (!token || token === '') {
+            return res.status(401).end();
+        }
+
+        try {
+            const decoded = jwt.verify(token, SECRET);
+
+            if (decoded) {
+                {{refreshToken}}
+                next();
+            } else {
+                return res.status(401).end();
+            }
+        } catch (e) {
+            LOGGER.error(e.message);
+            return res.status(401).end();
+        }
+    }
+}

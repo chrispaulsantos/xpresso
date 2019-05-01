@@ -1,9 +1,9 @@
 import { Application, NextFunction, Request, Response, Router } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { Logger } from '../services/logger';
+import { AuthService } from '../services/auth.service';
 
 const LOGGER = Logger.getLogger('AuthRoutes');
-const SECRET = '{{SECRET_KEY}}';
 
 export class AuthRoutes {
     public static routes(): Router {
@@ -11,37 +11,6 @@ export class AuthRoutes {
         let routes: AuthRoutes = new this(Router());
         routes.bootstrap();
         return routes.getRouter();
-    }
-
-    public static generateToken(): string {
-        return jwt.sign({}, SECRET, {
-            expiresIn: 60 * 60 * 24
-        });
-    }
-
-    public static checkToken(
-        req: Request,
-        res: Response,
-        next: NextFunction
-    ): void {
-        const token = req.header('x-api-token');
-        if (!token || token === '') {
-            return res.status(401).end();
-        }
-
-        try {
-            const decoded = jwt.verify(token, SECRET);
-
-            if (decoded) {
-                {{refreshToken}}
-                next();
-            } else {
-                return res.status(401).end();
-            }
-        } catch (e) {
-            LOGGER.error(e.message);
-            return res.status(401).end();
-        }
     }
 
     private readonly router: Router;
@@ -55,6 +24,7 @@ export class AuthRoutes {
     }
 
     private bootstrap(): void {
+        // TODO: Update with custom login functionality
         this.router.get('/login', (req: Request, res: Response) => {
             const username = req.query.username;
             const password = req.query.password;
@@ -66,7 +36,7 @@ export class AuthRoutes {
                 return res.status(400).json({ message: 'InvalidRequest' });
             }
 
-            const token = AuthRoutes.generateToken();
+            const token = AuthService.generateToken({});
             res.status(200).json({ token });
         });
     }
