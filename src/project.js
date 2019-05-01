@@ -51,12 +51,7 @@ function generateFolderStructure(names, options) {
                 });
 
             console.log('- Creating remaining folders');
-            const folders = [
-                'middleware',
-                'models',
-                'routes',
-                'database/schema'
-            ];
+            const folders = ['middleware', 'routes', 'database/schema'];
             folders.forEach(folder => {
                 let folderPath = path.join(projectDir, 'src', folder);
                 fs.mkdirSync(folderPath);
@@ -101,9 +96,7 @@ function generateFolderStructure(names, options) {
                 },
                 {
                     key: /{{databaseUrl}}/g,
-                    with: options.dbUrl
-                        ? options.dbUrl
-                        : 'mongodb://localhost:27017'
+                    with: options.dbUrl ? options.dbUrl : 'mongodb://localhost:27017'
                 }
             ];
 
@@ -116,20 +109,20 @@ function generateFolderStructure(names, options) {
 
 function npmInstall() {
     process.chdir(PROJECT_DIR);
-    const npm = child_process.spawn(
-        /^win/.test(process.platform) ? 'npm.cmd' : 'npm',
-        ['i'],
-        { stdio: 'inherit' }
-    );
+    const npm = child_process.spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['i'], {
+        stdio: 'inherit'
+    });
 }
 
 function enableFirebase() {
     let output = '';
 
-    const npm = child_process.spawn(
-        /^win/.test(process.platform) ? 'npm.cmd' : 'cmd',
-        ['list', '-g', '--depth', '0']
-    );
+    const npm = child_process.spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'cmd', [
+        'list',
+        '-g',
+        '--depth',
+        '0'
+    ]);
 
     npm.stdout.on('data', msg => {
         output += msg.toString();
