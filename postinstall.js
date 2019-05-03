@@ -2,12 +2,25 @@ const spawn = require('child_process').spawnSync;
 const fs = require('fs');
 const prettier = require('prettier');
 const path = require('path');
+const os = require('os');
 
-const npm = spawn('npm', ['list', '-g', '--depth', '0']);
+const PLATFORM = os.platform();
+const isWindows = !!PLATFORM.match(/win32/);
 
+console.log('Plartform:', PLATFORM);
+console.log('Windows:', isWindows);
+
+console.log('npm list -g --depth 0');
+const npm = spawn(isWindows ? 'npm.cmd' : 'npm', ['list', '-g', '--depth', '0']);
 let output = npm.output[1].toString();
 console.log(output);
-installPath = output.match(/^(\/.*)/g)[0];
+
+let installPath = '';
+if (isWindows) {
+    installPath = output.match(/^(C:.*)/g)[0];
+} else {
+    installPath = output.match(/^(\/.*)/g)[0];
+}
 installPath = path.resolve(installPath);
 
 let xpressoDir;
@@ -17,7 +30,7 @@ if (!fs.existsSync(path.join(installPath, 'node_modules', 'xpresso'))) {
 } else {
     xpressoDir = path.join(installPath, 'node_modules', 'xpresso');
 }
-console.log(xpressoDir);
+console.log('Install Path:', xpressoDir);
 
 const config = {
     xpressoDir,
