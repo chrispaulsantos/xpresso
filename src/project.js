@@ -12,7 +12,7 @@ function generateFolderStructure(names, options) {
         process.exit(1);
     }
 
-    const pwd = process.env.PWD;
+    const pwd = process.cwd();
 
     console.log('- Creating project directory');
     // Make project directory
