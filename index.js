@@ -120,6 +120,11 @@ program
         });
     });
 
+program.command('info').action(() => {
+    const isXpressoProject = util.isXpressoProject();
+    console.log('Xpresso Project:', isXpressoProject);
+});
+
 program.command('test').action(() => {
     commands.test();
 });

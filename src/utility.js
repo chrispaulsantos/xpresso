@@ -32,22 +32,29 @@ function isXpressoProject() {
 }
 
 function getProjectDirectoryPath() {
-    let pwd = process.env.PWD;
+    let pwd = process.cwd();
+    console.log('Current Working Directory:', pwd);
+
+    // Find the index of every '/'
     for (var a = [], i = pwd.length; i--; ) if (pwd[i] === '/') a.push(i);
 
+    // Loop through to see if this directory has a package.json
+    // which would indicate a node project
     let packagePath = null;
     for (i = 0; i < a.length; i++) {
         let filePath = path.join(pwd, 'package.json');
 
+        // If package.json exists, break, and we set the package path
         if (fs.existsSync(filePath)) {
             packagePath = filePath;
             break;
         }
 
+        // If package.json does not exist, slice to the next '/'
         pwd = pwd.slice(0, a[i] + 1);
     }
 
-    return pwd;
+    return packagePath;
 }
 
 function updateFileByKey(fileName, searchKey, content) {
