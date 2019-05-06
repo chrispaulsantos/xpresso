@@ -5,6 +5,17 @@ const pluralize = require('pluralize');
 const prettier = require('prettier');
 const config = require('../config');
 
+function setupEnv() {
+    isXpressoProject();
+    XPRESSO_DIR = getXpressoDirectory();
+    TEMPLATE_DIR = path.join(XPRESSO_DIR, 'templates');
+    PROJECT_DIR = getProjectDirectoryPath();
+    PROJECT_PACKAGE = '';
+    SRC_DIR = path.join(getProjectDirectoryPath(), 'src');
+    console.log(XPRESSO_DIR);
+    console.log(PROJECT_DIR);
+}
+
 function getXpressoDirectory() {
     let dir = path.join(config.xpressoDir);
     return dir;
@@ -46,7 +57,8 @@ function getProjectDirectoryPath() {
 
         // If package.json exists, break, and we set the package path
         if (fs.existsSync(filePath)) {
-            packagePath = filePath;
+            PROJECT_DIR = pwd;
+            packagePath = pwd;
             break;
         }
 
@@ -116,5 +128,6 @@ module.exports = {
     getProjectDirectoryPath,
     updateFileByKey,
     writeTemplate,
-    generateNames
+    generateNames,
+    setupEnv
 };

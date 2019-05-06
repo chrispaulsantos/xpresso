@@ -4,13 +4,15 @@ const path = require('path');
 const util = require('./src/utility');
 const commands = require('./src/commands');
 
-XPRESSO_DIR = util.getXpressoDirectory();
-TEMPLATE_DIR = path.join(XPRESSO_DIR, 'templates');
+const model = require('./src/model');
+
+XPRESSO_DIR = '';
+TEMPLATE_DIR = '';
 PROJECT_DIR = '';
 PROJECT_PACKAGE = '';
 SRC_DIR = '';
 
-program.version('1.1.6', '-v, --version');
+program.version('1.10.0', '-v, --version');
 
 program
     .command('init [name]')
@@ -120,13 +122,29 @@ program
         });
     });
 
+program.command('model [name]').action((name, cmd) => {
+    util.setupEnv();
+    if (!name || name === '') {
+        console.error('Please provide a model name');
+        process.exit(1);
+    }
+
+    model.create(name);
+});
+
 program.command('info').action(() => {
     const isXpressoProject = util.isXpressoProject();
+    console.log('Current Working Directory:', process.cwd());
+    console.log('Project Directory:', PROJECT_DIR);
     console.log('Xpresso Project:', isXpressoProject);
 });
 
-program.command('test').action(() => {
-    commands.test();
+program.on('command:*', function() {
+    console.error(
+        'Invalid command: %s\nSee --help for a list of available commands.',
+        program.args.join(' ')
+    );
+    process.exit(1);
 });
 
 program.parse(process.argv);
