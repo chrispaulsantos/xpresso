@@ -84,5 +84,5 @@ $ xpresso generate | g [options] [name]
 
 ## Todo
 - Option to disable database
-- Option to choose SQL or Mongo
+- Option to choose SQL or NoSQL 
 - Passport integration

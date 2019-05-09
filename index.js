@@ -19,10 +19,11 @@ program
     .option('-r, --repo [repo]', 'specify repository for the project')
     .option('-s, --summary [summary]', 'set the summary of the project')
     .option('-d, --dbUrl [dbUrl]', 'specify a development database url')
-    .option('--firebase', 'enable firebase deployment for functions')
     .option('--no-auth', 'disables jwt authentication')
     .option('--no-refresh', 'disables rolling token refresh')
     .action((name, cmd) => {
+        util.setupEnv();
+
         if (!name || name === '') {
             console.error('Provide a project name');
             process.exit(1);
@@ -35,15 +36,13 @@ program
         let dbUrl = cmd.dbUrl;
         let summary = cmd.summary;
         let repo = cmd.repo;
-        let firebase = cmd.firebase;
 
         let options = {
             auth,
             refresh,
             dbUrl,
             summary,
-            repo,
-            firebase
+            repo
         };
         commands.init(names, options);
     });
@@ -124,6 +123,8 @@ program
 
 program.command('model [name]').action((name, cmd) => {
     util.setupEnv();
+    util.checkIsXpressoProject();
+
     if (!name || name === '') {
         console.error('Please provide a model name');
         process.exit(1);
@@ -133,10 +134,7 @@ program.command('model [name]').action((name, cmd) => {
 });
 
 program.command('info').action(() => {
-    const isXpressoProject = util.isXpressoProject();
-    console.log('Current Working Directory:', process.cwd());
-    console.log('Project Directory:', PROJECT_DIR);
-    console.log('Xpresso Project:', isXpressoProject);
+    util.setupEnv();
 });
 
 program.on('command:*', function() {

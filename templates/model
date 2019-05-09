@@ -1,7 +1,5 @@
-import { Document } from 'mongoose';
-
 export class {{pascalSingular}} {
     constructor() {}
 }
 
-export interface {{pascalSingular}}Document extends Document, {{pascalSingular}} {}
+export interface {{pascalSingular}} {}

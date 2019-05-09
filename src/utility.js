@@ -6,14 +6,24 @@ const prettier = require('prettier');
 const config = require('../config');
 
 function setupEnv() {
-    isXpressoProject();
     XPRESSO_DIR = getXpressoDirectory();
+    console.log('Xpresso Install Path:', XPRESSO_DIR);
+
     TEMPLATE_DIR = path.join(XPRESSO_DIR, 'templates');
-    PROJECT_DIR = getProjectDirectoryPath();
-    PROJECT_PACKAGE = '';
-    SRC_DIR = path.join(getProjectDirectoryPath(), 'src');
-    console.log(XPRESSO_DIR);
-    console.log(PROJECT_DIR);
+    console.log('Xpresso Template Directory:', TEMPLATE_DIR);
+
+    const projectDirectory = getProjectDirectoryPath();
+    if (!projectDirectory) {
+        return;
+    }
+
+    PROJECT_DIR = projectDirectory;
+    console.log('Project Directory:', PROJECT_DIR);
+
+    SRC_DIR = path.join(PROJECT_DIR, 'src');
+    console.log('Source Directory:', SRC_DIR);
+
+    PROJECT_PACKAGE = getProjectPackageJson();
 }
 
 function getXpressoDirectory() {
@@ -21,30 +31,33 @@ function getXpressoDirectory() {
     return dir;
 }
 
+function checkIsXpressoProject() {
+    if (!isXpressoProject()) {
+        console.log('Not inside an xpresso project');
+        process.exit(1);
+    }
+}
+
 function isXpressoProject() {
-    let projectPath = getProjectDirectoryPath();
-
-    if (projectPath) {
-        const packagePath = path.join(projectPath, 'package.json');
-
-        if (!fs.existsSync(packagePath)) {
-            return false;
-        }
-
-        PROJECT_PACKAGE = JSON.parse(fs.readFileSync(packagePath).toString());
-        if (PROJECT_PACKAGE.xpresso) {
-            return true;
-        } else {
-            return false;
-        }
+    if (PROJECT_PACKAGE.xpresso) {
+        return true;
     } else {
         return false;
     }
 }
 
+function getProjectPackageJson() {
+    const packagePath = path.join(PROJECT_DIR, 'package.json');
+
+    if (!fs.existsSync(packagePath)) {
+        return false;
+    }
+
+    return JSON.parse(fs.readFileSync(packagePath).toString());
+}
+
 function getProjectDirectoryPath() {
     let pwd = process.cwd();
-    console.log('Current Working Directory:', pwd);
 
     // Find the index of every '/'
     for (var a = [], i = pwd.length; i--; ) if (pwd[i] === '/') a.push(i);
@@ -57,7 +70,6 @@ function getProjectDirectoryPath() {
 
         // If package.json exists, break, and we set the package path
         if (fs.existsSync(filePath)) {
-            PROJECT_DIR = pwd;
             packagePath = pwd;
             break;
         }
@@ -89,13 +101,20 @@ function updateFileByKey(fileName, searchKey, content) {
     fs.writeFileSync(filePath, prettiered);
 }
 
-function writeTemplate(template, filePathToWrite, replacements) {
+function replace(template, replacements) {
+    let str = template;
     replacements.forEach(replacement => {
-        template = template.replace(replacement.key, replacement.with);
+        str = template.replace(replacement.key, replacement.with);
     });
 
+    return str;
+}
+
+function writeTemplate(template, filePathToWrite, replacements) {
+    const updatedTemplate = replace(template, replacements);
+
     // Clean up code
-    const prettiered = prettier.format(template, {
+    const prettiered = prettier.format(updatedTemplate, {
         tabWidth: 4,
         singleQuote: true,
         parser: 'typescript'
@@ -122,6 +141,20 @@ function generateNames(name) {
     };
 }
 
+function getFiles(dir, files_) {
+    files_ = files_ || [];
+    var files = fs.readdirSync(dir);
+    for (var i in files) {
+        var name = `${dir}/${files[i]}`;
+        if (fs.statSync(name).isDirectory()) {
+            getFiles(name, files_);
+        } else {
+            files_.push(name);
+        }
+    }
+    return files_;
+}
+
 module.exports = {
     getXpressoDirectory,
     isXpressoProject,
@@ -129,5 +162,8 @@ module.exports = {
     updateFileByKey,
     writeTemplate,
     generateNames,
-    setupEnv
+    setupEnv,
+    getFiles,
+    checkIsXpressoProject,
+    replace
 };
