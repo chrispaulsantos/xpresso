@@ -1,3 +1,6 @@
+## v1.2.0
+- Added model command
+- Updated setting up the environment when a xpresso command is run
 ## v1.1.9
 - Changed to process.cwd() because process.env.PWD is not set in Windows
 - Fixed bug in get project path
