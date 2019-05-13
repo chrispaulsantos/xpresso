@@ -1,5 +1,8 @@
 ## v1.2.0
 - Added model command
+- Added route command
+- Removed i, generate, and g commands
+- Added global NAME_REPLACEMENTS to be resuable throughout the life of the command
 - Updated setting up the environment when a xpresso command is run
 ## v1.1.9
 - Changed to process.cwd() because process.env.PWD is not set in Windows
