@@ -4,8 +4,9 @@ const changeCase = require('change-case');
 const pluralize = require('pluralize');
 const prettier = require('prettier');
 const config = require('../config');
+const Replacement = require('./replacement');
 
-function setupEnv() {
+function setupEnv(name) {
     XPRESSO_DIR = getXpressoDirectory();
     console.log('Xpresso Install Path:', XPRESSO_DIR);
 
@@ -24,6 +25,19 @@ function setupEnv() {
     console.log('Source Directory:', SRC_DIR);
 
     PROJECT_PACKAGE = getProjectPackageJson();
+
+    if (name) {
+        const names = generateNames(name);
+
+        NAME_REPLACEMENTS = [
+            new Replacement('pascalSingular', names.pascalSingular),
+            new Replacement('pascalPlural', names.pascalPlural),
+            new Replacement('camelSingular', names.camelSingular),
+            new Replacement('camelPlural', names.camelPlural),
+            new Replacement('paramSingular', names.paramSingular),
+            new Replacement('paramPlural', names.paramPlural)
+        ];
+    }
 }
 
 function getXpressoDirectory() {
@@ -104,7 +118,7 @@ function updateFileByKey(fileName, searchKey, content) {
 function replace(template, replacements) {
     let str = template;
     replacements.forEach(replacement => {
-        str = template.replace(replacement.key, replacement.with);
+        str = str.replace(replacement.key, replacement.with);
     });
 
     return str;
@@ -124,6 +138,14 @@ function writeTemplate(template, filePathToWrite, replacements) {
     console.log(filePathToWrite);
 }
 
+/**
+ *
+ * @param {*} name Input name to transform to different cases
+ * Input: flightAttendant
+ * Camel: flightAttendant
+ * Pascal: FlightAttendant
+ * Param: flight-attendant
+ */
 function generateNames(name) {
     const singular = pluralize.singular(name);
     const plural = pluralize.plural(name);
@@ -136,7 +158,7 @@ function generateNames(name) {
         camelPlural: changeCase.camelCase(plural), // flightAttendents
         pascalSingular: changeCase.pascalCase(singular), // FlightAttendent
         pascalPlural: changeCase.pascalCase(plural), // FlightAttendents
-        paramSingular: changeCase.paramCase(singular), // flight-attemdant
+        paramSingular: changeCase.paramCase(singular), // flight-attendant
         paramPlural: changeCase.paramCase(plural) // flight-attendants
     };
 }
