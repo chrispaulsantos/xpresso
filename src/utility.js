@@ -15,6 +15,7 @@ function setupEnv(name) {
 
     const projectDirectory = getProjectDirectoryPath();
     if (!projectDirectory) {
+        console.log('Not inside a Node project');
         return;
     }
 

@@ -13,7 +13,7 @@ SRC_DIR = '';
 PROJECT_PACKAGE = {};
 NAME_REPLACEMENTS = [];
 
-program.version('1.2.0', '-v, --version');
+program.version('1.2.1', '-v, --version');
 
 program
     .command('init [name]')
@@ -49,14 +49,13 @@ program
     });
 
 program.command('model [name]').action((name, cmd) => {
-    util.checkIsXpressoProject();
-
     if (!name || name === '') {
         console.error('Please provide a model name');
         process.exit(1);
     }
 
     util.setupEnv(name);
+    util.checkIsXpressoProject();
 
     model.create(name);
 });
@@ -67,14 +66,13 @@ program
     .option('--no-auth', 'disables jwt authentication for the route')
     .option('--no-spec', 'disables spec file generation for this route')
     .action((name, cmd) => {
-        util.checkIsXpressoProject();
-
         if (!name || name === '') {
             console.error('Please provide a route name');
             process.exit(1);
         }
 
         util.setupEnv(name);
+        util.checkIsXpressoProject();
 
         let auth = cmd.auth;
         let websocket = cmd.websocket;
@@ -85,8 +83,6 @@ program
             websocket,
             spec
         };
-
-        console.dir(options);
 
         route.create(name, options);
     });
