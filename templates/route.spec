@@ -1,13 +1,6 @@
 import * as express from 'express';
 import * as ws from 'express-ws';
-import { connection, Schema } from 'mongoose';
-import { {{pascalSingular}}Document } from '../../src/models/{{paramSingular}}';
 import { {{pascalSingular}}Routes } from '../../src/routes/{{paramSingular}}.routes';
-
-beforeAll(() => {
-    // Need to define model on connection
-    connection.model<{{pascalSingular}}Document>('{{paramPlural}}', new Schema());
-});
 
 test('initialize - contains routes', () => {
     const app = ws(express()).app;

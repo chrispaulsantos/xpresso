@@ -1,5 +1,9 @@
 const util = require('./../src/utility');
 
+beforeAll(() => {
+    util.setupEnv();
+});
+
 test('isXpressoProject', () => {
     const isXpressoProject = util.isXpressoProject();
 

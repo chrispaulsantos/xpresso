@@ -5,9 +5,6 @@ import { Logger } from '../services/logger';
 
 {{authImport}}
 
-import { {{pascalPlural}}Service } from '../services/{{paramSingular}}.service';
-import { {{pascalSingular}} } from '../models/{{paramSingular}}';
-
 const LOGGER = Logger.getLogger('{{pascalSingular}}Routes');
 
 export class {{pascalSingular}}Routes {
@@ -19,11 +16,9 @@ export class {{pascalSingular}}Routes {
     }
 
     private readonly router: Router;
-    private {{camelPlural}}Service: {{pascalPlural}}Service;
 
     constructor(router: Router) {
         this.router = router;
-        this.{{camelPlural}}Service = new {{pascalPlural}}Service();
     }
 
     public getRouter(): Router {
@@ -36,19 +31,9 @@ export class {{pascalSingular}}Routes {
         {{authMiddleware}}
 
         this.router.get('/{{paramPlural}}', async (req: Request, res: Response) => {
-            const {{camelPlural}}: {{pascalSingular}}[] = await this.{{camelPlural}}Service.getAll();
-            res.status(200).json({ {{camelPlural}} });
+            res.status(200).end();
         })
         this.router.post('/{{paramPlural}}', async (req: Request, res: Response) => {
-            const {{camelSingular}} = req.body as {{pascalSingular}};
-            let created{{pascalSingular}}: {{pascalSingular}} = null;
-
-            try {
-                created{{pascalSingular}} = await this.{{camelPlural}}Service.create({{camelSingular}})
-            } catch (e) {
-                return res.status(500).json(e);
-            }
-
             res.status(200).end();
         })
         this.router.get('/{{paramPlural}}/:id', async (req: Request, res: Response) => {

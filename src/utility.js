@@ -4,36 +4,75 @@ const changeCase = require('change-case');
 const pluralize = require('pluralize');
 const prettier = require('prettier');
 const config = require('../config');
+const Replacement = require('./replacement');
+
+function setupEnv(name) {
+    XPRESSO_DIR = getXpressoDirectory();
+    console.log('Xpresso Install Path:', XPRESSO_DIR);
+
+    TEMPLATE_DIR = path.join(XPRESSO_DIR, 'templates');
+    console.log('Xpresso Template Directory:', TEMPLATE_DIR);
+
+    const projectDirectory = getProjectDirectoryPath();
+    if (!projectDirectory) {
+        console.log('Not inside a Node project');
+        return;
+    }
+
+    PROJECT_DIR = projectDirectory;
+    console.log('Project Directory:', PROJECT_DIR);
+
+    SRC_DIR = path.join(PROJECT_DIR, 'src');
+    console.log('Source Directory:', SRC_DIR);
+
+    PROJECT_PACKAGE = getProjectPackageJson();
+
+    if (name) {
+        const names = generateNames(name);
+
+        NAME_REPLACEMENTS = [
+            new Replacement('pascalSingular', names.pascalSingular),
+            new Replacement('pascalPlural', names.pascalPlural),
+            new Replacement('camelSingular', names.camelSingular),
+            new Replacement('camelPlural', names.camelPlural),
+            new Replacement('paramSingular', names.paramSingular),
+            new Replacement('paramPlural', names.paramPlural)
+        ];
+    }
+}
 
 function getXpressoDirectory() {
     let dir = path.join(config.xpressoDir);
     return dir;
 }
 
+function checkIsXpressoProject() {
+    if (!isXpressoProject()) {
+        console.log('Not inside an xpresso project');
+        process.exit(1);
+    }
+}
+
 function isXpressoProject() {
-    let projectPath = getProjectDirectoryPath();
-
-    if (projectPath) {
-        const packagePath = path.join(projectPath, 'package.json');
-
-        if (!fs.existsSync(packagePath)) {
-            return false;
-        }
-
-        PROJECT_PACKAGE = JSON.parse(fs.readFileSync(packagePath).toString());
-        if (PROJECT_PACKAGE.xpresso) {
-            return true;
-        } else {
-            return false;
-        }
+    if (PROJECT_PACKAGE.xpresso) {
+        return true;
     } else {
         return false;
     }
 }
 
+function getProjectPackageJson() {
+    const packagePath = path.join(PROJECT_DIR, 'package.json');
+
+    if (!fs.existsSync(packagePath)) {
+        return false;
+    }
+
+    return JSON.parse(fs.readFileSync(packagePath).toString());
+}
+
 function getProjectDirectoryPath() {
     let pwd = process.cwd();
-    console.log('Current Working Directory:', pwd);
 
     // Find the index of every '/'
     for (var a = [], i = pwd.length; i--; ) if (pwd[i] === '/') a.push(i);
@@ -46,7 +85,7 @@ function getProjectDirectoryPath() {
 
         // If package.json exists, break, and we set the package path
         if (fs.existsSync(filePath)) {
-            packagePath = filePath;
+            packagePath = pwd;
             break;
         }
 
@@ -77,13 +116,20 @@ function updateFileByKey(fileName, searchKey, content) {
     fs.writeFileSync(filePath, prettiered);
 }
 
-function writeTemplate(template, filePathToWrite, replacements) {
+function replace(template, replacements) {
+    let str = template;
     replacements.forEach(replacement => {
-        template = template.replace(replacement.key, replacement.with);
+        str = str.replace(replacement.key, replacement.with);
     });
 
+    return str;
+}
+
+function writeTemplate(template, filePathToWrite, replacements) {
+    const updatedTemplate = replace(template, replacements);
+
     // Clean up code
-    const prettiered = prettier.format(template, {
+    const prettiered = prettier.format(updatedTemplate, {
         tabWidth: 4,
         singleQuote: true,
         parser: 'typescript'
@@ -93,6 +139,14 @@ function writeTemplate(template, filePathToWrite, replacements) {
     console.log(filePathToWrite);
 }
 
+/**
+ *
+ * @param {*} name Input name to transform to different cases
+ * Input: flightAttendant
+ * Camel: flightAttendant
+ * Pascal: FlightAttendant
+ * Param: flight-attendant
+ */
 function generateNames(name) {
     const singular = pluralize.singular(name);
     const plural = pluralize.plural(name);
@@ -105,9 +159,23 @@ function generateNames(name) {
         camelPlural: changeCase.camelCase(plural), // flightAttendents
         pascalSingular: changeCase.pascalCase(singular), // FlightAttendent
         pascalPlural: changeCase.pascalCase(plural), // FlightAttendents
-        paramSingular: changeCase.paramCase(singular), // flight-attemdant
+        paramSingular: changeCase.paramCase(singular), // flight-attendant
         paramPlural: changeCase.paramCase(plural) // flight-attendants
     };
+}
+
+function getFiles(dir, files_) {
+    files_ = files_ || [];
+    var files = fs.readdirSync(dir);
+    for (var i in files) {
+        var name = `${dir}/${files[i]}`;
+        if (fs.statSync(name).isDirectory()) {
+            getFiles(name, files_);
+        } else {
+            files_.push(name);
+        }
+    }
+    return files_;
 }
 
 module.exports = {
@@ -116,5 +184,9 @@ module.exports = {
     getProjectDirectoryPath,
     updateFileByKey,
     writeTemplate,
-    generateNames
+    generateNames,
+    setupEnv,
+    getFiles,
+    checkIsXpressoProject,
+    replace
 };

@@ -13,27 +13,18 @@ function init(names, options) {
         process.exit(1);
     }
 
-    project
-        .generateFolderStructure(names, options)
-        .then(projectDir => {
-            PROJECT_DIR = projectDir;
-            SRC_DIR = path.join(PROJECT_DIR, 'src');
+    const pwd = process.cwd();
+    PROJECT_DIR = path.join(pwd, names.projectName);
+    SRC_DIR = path.join(PROJECT_DIR, 'src');
 
-            if (options.auth) {
-                route.auth(options);
-            }
+    project.generateFolderStructure(names, options);
 
-            console.log('- Installing dependencies');
-            project.npmInstall();
+    if (options.auth) {
+        route.auth(options);
+    }
 
-            if (options.firebase) {
-                project.enableFirebase();
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            process.exit(1);
-        });
+    console.log('- Installing dependencies');
+    project.npmInstall();
 }
 
 function generate(names, options) {
@@ -42,14 +33,10 @@ function generate(names, options) {
         process.exit(1);
     }
 
-    PROJECT_DIR = util.getProjectDirectoryPath();
-    SRC_DIR = path.join(PROJECT_DIR, 'src');
     route.generate(names, options);
 }
 
-function test() {
-    project.enableFirebase();
-}
+function test() {}
 
 module.exports = {
     init,

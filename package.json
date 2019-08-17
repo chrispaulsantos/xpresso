@@ -1,6 +1,6 @@
 {
   "name": "xpresso",
-  "version": "1.1.9",
+  "version": "1.2.1",
   "description": "A typescript express generator for fast, scalable REST APIs",
   "main": "index.js",
   "scripts": {
@@ -34,8 +34,8 @@
   "dependencies": {
     "change-case": "^3.0.2",
     "commander": "^2.17.1",
+    "fs-extra": "^7.0.1",
     "lodash": "^4.17.10",
-    "ncp": "^2.0.0",
     "pluralize": "^7.0.0",
     "prettier": "^1.14.2"
   },

@@ -1,23 +1,25 @@
 #!/usr/bin/env node
 program = require('commander');
-const path = require('path');
 const util = require('./src/utility');
 const commands = require('./src/commands');
 
-XPRESSO_DIR = util.getXpressoDirectory();
-TEMPLATE_DIR = path.join(XPRESSO_DIR, 'templates');
-PROJECT_DIR = '';
-PROJECT_PACKAGE = '';
-SRC_DIR = '';
+const model = require('./src/model');
+const route = require('./src/route/index');
 
-program.version('1.1.6', '-v, --version');
+XPRESSO_DIR = '';
+TEMPLATE_DIR = '';
+PROJECT_DIR = '';
+SRC_DIR = '';
+PROJECT_PACKAGE = {};
+NAME_REPLACEMENTS = [];
+
+program.version('1.2.1', '-v, --version');
 
 program
     .command('init [name]')
     .option('-r, --repo [repo]', 'specify repository for the project')
     .option('-s, --summary [summary]', 'set the summary of the project')
     .option('-d, --dbUrl [dbUrl]', 'specify a development database url')
-    .option('--firebase', 'enable firebase deployment for functions')
     .option('--no-auth', 'disables jwt authentication')
     .option('--no-refresh', 'disables rolling token refresh')
     .action((name, cmd) => {
@@ -26,39 +28,7 @@ program
             process.exit(1);
         }
 
-        let names = util.generateNames(name);
-
-        let auth = cmd.auth;
-        let refresh = cmd.refresh;
-        let dbUrl = cmd.dbUrl;
-        let summary = cmd.summary;
-        let repo = cmd.repo;
-        let firebase = cmd.firebase;
-
-        let options = {
-            auth,
-            refresh,
-            dbUrl,
-            summary,
-            repo,
-            firebase
-        };
-        commands.init(names, options);
-    });
-
-program
-    .command('i [name]')
-    .option('-r, --repo [repo]', 'specify repository for the project')
-    .option('-s, --summary [summary]', 'set the summary of the project')
-    .option('-d, --dbUrl [dbUrl]', 'specify a development database url')
-    .option('--firebase', 'enable firebase deployment for functions')
-    .option('--no-auth', 'disables jwt authentication')
-    .option('--no-refresh', 'disables rolling token refresh')
-    .action((name, cmd) => {
-        if (!name || name === '') {
-            console.error('Provide a project name');
-            process.exit(1);
-        }
+        util.setupEnv(name);
 
         let names = util.generateNames(name);
 
@@ -67,66 +37,66 @@ program
         let dbUrl = cmd.dbUrl;
         let summary = cmd.summary;
         let repo = cmd.repo;
-        let firebase = cmd.firebase;
 
         let options = {
             auth,
             refresh,
             dbUrl,
             summary,
-            repo,
-            firebase
+            repo
         };
         commands.init(names, options);
     });
 
+program.command('model [name]').action((name, cmd) => {
+    if (!name || name === '') {
+        console.error('Please provide a model name');
+        process.exit(1);
+    }
+
+    util.setupEnv(name);
+    util.checkIsXpressoProject();
+
+    model.create(name);
+});
+
 program
-    .command('generate [name]')
+    .command('route [name]')
     .option('-w, --websocket', 'add a websocket handler')
     .option('--no-auth', 'disables jwt authentication for the route')
+    .option('--no-spec', 'disables spec file generation for this route')
     .action((name, cmd) => {
         if (!name || name === '') {
-            console.error('Provide a project name');
+            console.error('Please provide a route name');
             process.exit(1);
         }
 
-        let names = util.generateNames(name);
+        util.setupEnv(name);
+        util.checkIsXpressoProject();
 
         let auth = cmd.auth;
         let websocket = cmd.websocket;
-        commands.generate(names, {
+        let spec = cmd.spec;
+
+        let options = {
             auth,
-            websocket
-        });
-    });
+            websocket,
+            spec
+        };
 
-program
-    .command('g [name]')
-    .option('-w, --websocket', 'add a websocket handler')
-    .option('--no-auth', 'disables jwt authentication for the route')
-    .action((name, cmd) => {
-        if (!name || name === '') {
-            console.error('Provide a project name');
-            process.exit(1);
-        }
-
-        let names = util.generateNames(name);
-
-        let auth = cmd.auth;
-        let websocket = cmd.websocket;
-        commands.generate(names, {
-            auth,
-            websocket
-        });
+        route.create(name, options);
     });
 
 program.command('info').action(() => {
-    const isXpressoProject = util.isXpressoProject();
-    console.log('Xpresso Project:', isXpressoProject);
+    util.setupEnv();
 });
 
-program.command('test').action(() => {
-    commands.test();
+program.on('command:*', function() {
+    console.error(
+        'Invalid command: %s\nSee --help for a list of available commands.',
+        program.args.join(' ')
+    );
+    process.exit(1);
 });
 
 program.parse(process.argv);
