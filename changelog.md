@@ -1,3 +1,9 @@
+## v1.2.2
+- Updated project structure
+- Added supertest for testing
+- Updated architecture for testing
+## v1.2.1
+- Fixed bug preventing models and routes from being generated
 ## v1.2.0
 - Added model command
 - Added route command

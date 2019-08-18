@@ -1,6 +1,6 @@
 {
   "name": "xpresso",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A typescript express generator for fast, scalable REST APIs",
   "main": "index.js",
   "scripts": {
