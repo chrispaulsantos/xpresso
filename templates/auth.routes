@@ -1,21 +1,22 @@
-import { Application, NextFunction, Request, Response, Router } from 'express';
-import * as jwt from 'jsonwebtoken';
+import * as express from 'express';
+import { Response } from 'express';
 import { Logger } from '../services/logger';
-import { AuthService } from '../services/auth.service';
+import { JWTService } from '../services/jwt.service';
+import { Request, Router } from '../typings';
 
 const LOGGER = Logger.getLogger('AuthRoutes');
 
 export class AuthRoutes {
     public static routes(): Router {
-        LOGGER.info('Getting auth routes');
-        let routes: AuthRoutes = new this(Router());
+        LOGGER.info('Setting up auth routes');
+        let routes: AuthRoutes = new this(express.Router());
         routes.bootstrap();
         return routes.getRouter();
     }
 
     private readonly router: Router;
 
-    constructor(router: Router) {
+    private constructor(router: Router) {
         this.router = router;
     }
 
@@ -25,9 +26,9 @@ export class AuthRoutes {
 
     private bootstrap(): void {
         // TODO: Update with custom login functionality
-        this.router.get('/login', (req: Request, res: Response) => {
-            const username = req.query.username;
-            const password = req.query.password;
+        this.router.post('/login', (req: Request, res: Response) => {
+            const username = req.body.username;
+            const password = req.body.password;
 
             if (!username || username === '') {
                 return res.status(400).json({ message: 'InvalidRequest' });
@@ -36,7 +37,7 @@ export class AuthRoutes {
                 return res.status(400).json({ message: 'InvalidRequest' });
             }
 
-            const token = AuthService.generateToken({});
+            const token = JWTService.generateToken({});
             res.status(200).json({ token });
         });
     }

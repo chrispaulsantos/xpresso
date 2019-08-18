@@ -1,6 +1,7 @@
 import * as express from 'express';
-import { Request, Response, Router } from 'express';
+import { Response } from 'express';
 import { Logger } from '../services/logger';
+import { Request, Router } from '../typings';
 {{websocketImport}}
 
 {{authImport}}
@@ -9,8 +10,8 @@ const LOGGER = Logger.getLogger('{{pascalSingular}}Routes');
 
 export class {{pascalSingular}}Routes {
     public static routes(): Router {
-        LOGGER.info('Getting {{paramSingular}} routes');
-        let routes: {{pascalSingular}}Routes = new this(Router());
+        LOGGER.info('Setting up {{paramSingular}} routes');
+        let routes: {{pascalSingular}}Routes = new this(express.Router());
         routes.bootstrap();
         return routes.getRouter();
     }

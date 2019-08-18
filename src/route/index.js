@@ -2,6 +2,7 @@ const util = require('../utility');
 const fs = require('fs-extra');
 const path = require('path');
 const Replacement = require('./../replacement');
+const crypto = require('crypto');
 
 const create = (name, options) => {
     const names = util.generateNames(name);
@@ -19,25 +20,21 @@ const create = (name, options) => {
         ...NAME_REPLACEMENTS,
         new Replacement(
             'authImport',
-            options.auth ? `import { AuthService } from '../services/auth.service';` : ''
+            options.auth ? `import { validateToken } from '../middleware/auth.middleware';` : ''
         ),
-        new Replacement(
-            'authMiddleware',
-            options.auth ? `this.router.use(AuthService.checkToken);` : ''
-        ),
+        new Replacement('authMiddleware', options.auth ? `this.router.use(validateToken());` : ''),
         new Replacement(
             'websocketImport',
-            options.websocket
-                ? `import * as WebSocket from 'ws';\nimport { Application } from 'express-ws';`
-                : `import { Application } from 'express'`
+            options.websocket ? `import * as WebSocket from 'ws';\n` : ``
         ),
         new Replacement(
             'websocketRoute',
             options.websocket
                 ? `
-            this.app.ws('/${names.camelSingular}', (ws: WebSocket, req: Request) => {
+            this.router.ws('/${names.camelSingular}', (ws: WebSocket, req: Request) => {
+                LOGGER.info('WS - Client connected');
                 ws.on('message', msg => {
-                    ws.send('I recieved your message: ' + msg);
+                    ws.send('Message recieved: ' + msg);
                 });
             });
         `
@@ -52,9 +49,9 @@ const create = (name, options) => {
     let content = `import { ${names.pascalSingular}Routes } from './routes/${
         names.paramSingular
     }.routes';`;
-    util.updateFileByKey('index.ts', 'ENDIMPORTS', content);
+    util.updateFileByKey('app.ts', 'ENDIMPORTS', content);
     content = `app.use(${names.pascalSingular}Routes.routes());`;
-    util.updateFileByKey('index.ts', 'ENDROUTES', content);
+    util.updateFileByKey('app.ts', 'ENDROUTES', content);
 
     if (options.spec) {
         createTest(names);
@@ -71,4 +68,38 @@ const createTest = names => {
     util.writeTemplate(template, destinationPath, NAME_REPLACEMENTS);
 };
 
-module.exports = { create };
+function auth(options) {
+    console.log('- Generating secret');
+    // Generate 512-bit string
+    const secret = crypto.randomBytes(32).toString('hex');
+
+    console.log('- Updating jwt service');
+    let templatePath = path.join(TEMPLATE_DIR, 'jwt.service');
+    let destinationPath = path.join(SRC_DIR, 'services/jwt.service.ts');
+
+    let template = fs.readFileSync(templatePath).toString();
+    let replacements = [
+        {
+            key: /{{SECRET_KEY}}/g,
+            with: secret
+        }
+    ];
+
+    util.writeTemplate(template, destinationPath, replacements);
+
+    console.log('- Updating auth route');
+    templatePath = path.join(TEMPLATE_DIR, 'auth.routes');
+    destinationPath = path.join(SRC_DIR, 'routes/auth.routes.ts');
+
+    template = fs.readFileSync(templatePath).toString();
+    replacements = [];
+
+    util.writeTemplate(template, destinationPath, replacements);
+
+    let content = `import { AuthRoutes } from './routes/auth.routes';`;
+    util.updateFileByKey('app.ts', 'ENDIMPORTS', content);
+    content = `app.use(AuthRoutes.routes());`;
+    util.updateFileByKey('app.ts', 'ENDROUTES', content);
+}
+
+module.exports = { create, auth };

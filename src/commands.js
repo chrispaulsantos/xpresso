@@ -27,19 +27,6 @@ function init(names, options) {
     project.npmInstall();
 }
 
-function generate(names, options) {
-    if (!util.isXpressoProject()) {
-        console.error('Not inside an xpresso project');
-        process.exit(1);
-    }
-
-    route.generate(names, options);
-}
-
-function test() {}
-
 module.exports = {
-    init,
-    generate,
-    test
+    init
 };

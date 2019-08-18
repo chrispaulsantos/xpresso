@@ -29,7 +29,7 @@ function generateFolderStructure(names, options) {
         });
 
     console.log('- Creating remaining folders');
-    const folders = ['middleware', 'routes', 'database/schema'];
+    const folders = ['routes', 'database/schema'];
     folders.forEach(folder => {
         let folderPath = path.join(SRC_DIR, folder);
         fs.mkdirSync(folderPath, { recursive: true });

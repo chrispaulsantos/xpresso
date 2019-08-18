@@ -1,7 +1,6 @@
 import { Model, model } from 'mongoose';
 import { {{pascalSingular}}Document, {{pascalSingular}} } from '../models/{{paramSingular}}';
 import { Logger } from './logger';
-const context = require('express-cls-hooked')
 
 const LOGGER = Logger.getLogger('{{pascalSingular}}Service');
 
