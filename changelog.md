@@ -1,3 +1,5 @@
+## v1.2.4
+- Fixed bug with incorrect require path
 ## v1.2.3
 - Added option to choose database type
 ## v1.2.2
