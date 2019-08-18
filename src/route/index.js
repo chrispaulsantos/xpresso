@@ -59,9 +59,15 @@ const create = (name, options) => {
 };
 
 const createTest = names => {
+    // Check if the tests/routes folder exists
+    const routeTestDir = path.join(PROJECT_DIR, 'tests', 'routes');
+    if (!fs.existsSync(routeTestDir)) {
+        fs.mkdirSync(routeTestDir);
+    }
+
     /* * * * TEST GENERATION * * * */
     templatePath = path.join(TEMPLATE_DIR, 'route.spec');
-    destinationPath = path.join(PROJECT_DIR, `tests/routes/${names.paramSingular}.unit.spec.ts`);
+    destinationPath = path.join(routeTestDir, `${names.paramSingular}.unit.spec.ts`);
 
     template = fs.readFileSync(templatePath).toString();
 
