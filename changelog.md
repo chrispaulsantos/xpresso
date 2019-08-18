@@ -1,3 +1,5 @@
+## v1.2.3
+- Added option to choose database type
 ## v1.2.2
 - Updated project structure
 - Added supertest for testing

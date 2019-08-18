@@ -13,7 +13,7 @@ SRC_DIR = '';
 PROJECT_PACKAGE = {};
 NAME_REPLACEMENTS = [];
 
-program.version('1.2.2', '-v, --version');
+program.version('1.2.3', '-v, --version');
 
 program
     .command('init [name]')
