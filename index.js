@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 program = require('commander');
 const util = require('./src/utility');
-const commands = require('./src/commands');
 
+const project = require('./src/project');
 const model = require('./src/model');
-const route = require('./src/route/index');
+const route = require('./src/route');
 
 XPRESSO_DIR = '';
 TEMPLATE_DIR = '';
@@ -13,15 +13,13 @@ SRC_DIR = '';
 PROJECT_PACKAGE = {};
 NAME_REPLACEMENTS = [];
 
-program.version('1.2.1', '-v, --version');
+program.version('1.2.2', '-v, --version');
 
 program
     .command('init [name]')
     .option('-r, --repo [repo]', 'specify repository for the project')
     .option('-s, --summary [summary]', 'set the summary of the project')
-    .option('-d, --dbUrl [dbUrl]', 'specify a development database url')
     .option('--no-auth', 'disables jwt authentication')
-    .option('--no-refresh', 'disables rolling token refresh')
     .action((name, cmd) => {
         if (!name || name === '') {
             console.error('Provide a project name');
@@ -33,19 +31,15 @@ program
         let names = util.generateNames(name);
 
         let auth = cmd.auth;
-        let refresh = cmd.refresh;
-        let dbUrl = cmd.dbUrl;
         let summary = cmd.summary;
         let repo = cmd.repo;
 
         let options = {
             auth,
-            refresh,
-            dbUrl,
             summary,
             repo
         };
-        commands.init(names, options);
+        project.init(names, options);
     });
 
 program.command('model [name]').action((name, cmd) => {
@@ -90,6 +84,8 @@ program
 program.command('info').action(() => {
     util.setupEnv();
 });
+
+program.command('test').action(() => {});
 
 program.on('command:*', function() {
     console.error(

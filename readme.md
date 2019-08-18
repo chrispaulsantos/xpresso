@@ -19,8 +19,6 @@ Install the cli tool
 $ npm install -g xpresso
 ```
 
-**Note - by default the project will connect to mongodb at mongodb://localhost:27017, so ensure a mongo server is running on your local machine, otherwise specify the desired mongo uri with the ``--dbUrl`` flag when running ``xpresso init``.**
-
 Navigate to the directory you wish to create the project in, and run the init command, followed by the project name. A new folder will be created that follows the name you provide:
 ```bash
 $ cd projects && xpresso init comics
@@ -73,9 +71,7 @@ Generates a new xpresso project
 $ xpresso init [options] [name]
     -r, --repo [repo]        specify repository for the project
     -s, --summary [summary]  set the summary of the project
-    -d, --dbUrl [dbUrl]      specify a development database url
     --no-auth                disables jwt authentication
-    --no-refresh             disables rolling token refresh
 ```
 
 ### route 
@@ -95,4 +91,3 @@ $ xpresso model [name]
 
 ## Todo
 - Option to disable database
-- Option to choose SQL or NoSQL 
