@@ -1,3 +1,5 @@
+## v1.2.5
+- Fixed bug with route test creation
 ## v1.2.4
 - Fixed bug with incorrect require path
 ## v1.2.3
