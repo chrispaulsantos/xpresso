@@ -2,12 +2,12 @@ const child_process = require('child_process');
 const fs = require('fs-extra');
 const _ = require('lodash');
 const path = require('path');
-const util = require('./utility');
+const util = require('../utility');
 const inquirer = require('inquirer');
 const colors = require('colors');
 const pad = require('pad');
-const Replacement = require('./replacement');
-const route = require('./route');
+const Replacement = require('../replacement');
+const route = require('../route');
 
 const DATABASE_TYPES = ['postgres', 'mysql', 'mongodb'];
 const DATABASE_PORTS = {
