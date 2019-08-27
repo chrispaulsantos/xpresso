@@ -46,11 +46,9 @@ const create = (name, options) => {
     util.writeTemplate(template, routePath, replacements);
 
     // Import route into base app
-    let content = `import { ${names.pascalSingular}Routes } from './routes/${
-        names.paramSingular
-    }.routes';`;
+    let content = `import { ${names.pascalSingular}Routes } from './routes/${names.paramSingular}.routes';`;
     util.updateFileByKey('app.ts', 'ENDIMPORTS', content);
-    content = `app.use(${names.pascalSingular}Routes.routes());`;
+    content = `app.use('/${names.paramPlural}', ${names.pascalSingular}Routes.routes());`;
     util.updateFileByKey('app.ts', 'ENDROUTES', content);
 
     if (options.spec) {

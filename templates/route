@@ -31,19 +31,19 @@ export class {{pascalSingular}}Routes {
 
         {{authMiddleware}}
 
-        this.router.get('/{{paramPlural}}', async (req: Request, res: Response) => {
+        this.router.get('/', async (req: Request, res: Response) => {
             res.status(200).end();
         })
-        this.router.post('/{{paramPlural}}', async (req: Request, res: Response) => {
+        this.router.post('/', async (req: Request, res: Response) => {
             res.status(200).end();
         })
-        this.router.get('/{{paramPlural}}/:id', async (req: Request, res: Response) => {
+        this.router.get('/:id', async (req: Request, res: Response) => {
             res.status(200).end();
         })
-        this.router.put('/{{paramPlural}}/:id', async (req: Request, res: Response) => {
+        this.router.put('/:id', async (req: Request, res: Response) => {
             res.status(200).end();
         })
-        this.router.delete('/{{paramPlural}}/:id', async (req: Request, res: Response) => {
+        this.router.delete('/:id', async (req: Request, res: Response) => {
             res.status(200).end();
         })
     }
