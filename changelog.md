@@ -1,3 +1,6 @@
+## v1.2.7
+- Fixed bug on windows where we were matching wrong path separator
+- Updated route template to fix middleware trickling down from other routers
 ## v1.2.6
 - Removed source code packages from xpresso package.json
 - Updated test roots to avoid running tests in the template directory
