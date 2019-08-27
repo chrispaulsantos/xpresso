@@ -28,5 +28,9 @@
   },
   "bin": {
     "xpresso": "./index.js"
+  },
+  "jest": {
+    "roots": ["tests"],
+    "testRegex": "\\.(js|jsx)$"
   }
 }
