@@ -1,3 +1,6 @@
+## v1.2.6
+- Removed source code packages from xpresso package.json
+- Updated test roots to avoid running tests in the template directory
 ## v1.2.5
 - Fixed bug with route test creation
 ## v1.2.4
