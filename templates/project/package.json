@@ -24,7 +24,7 @@
         "@types/uuid": "^3.4.3",
         "jest": "^24.9.0",
         "nodemon": "^1.18.8",
-        "supertest": "^4.0.2",  
+        "supertest": "^4.0.2",
         "ts-node": "^8.3.0",
         "ts-jest": "^24.0.2",
         "typescript": "^3.0.1"
