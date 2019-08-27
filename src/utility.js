@@ -74,8 +74,14 @@ function getProjectPackageJson() {
 function getProjectDirectoryPath() {
     let pwd = process.cwd();
 
+    // If we're on windows we need to check for \ instead of /
+    let pathSeparator = '/';
+    if (/^win/.test(process.platform)) {
+        pathSeparator = '\\';
+    }
+
     // Find the index of every '/'
-    for (var a = [], i = pwd.length; i--; ) if (pwd[i] === '/') a.push(i);
+    for (var a = [], i = pwd.length; i--; ) if (pwd[i] === pathSeparator) a.push(i);
 
     // Loop through to see if this directory has a package.json
     // which would indicate a node project
