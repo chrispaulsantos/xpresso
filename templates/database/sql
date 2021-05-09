@@ -3,7 +3,7 @@ import { Logger } from '../services/logger';
 
 const LOGGER = Logger.getLogger('Database');
 
-type ConnectHook: () => void;
+type ConnectHook = () => void;
 
 export function connect(hook: ConnectHook) {{
     LOGGER.info('Connecting to database');
@@ -22,7 +22,7 @@ export function connect(hook: ConnectHook) {{
         .then(async connection => {
             // here you can start to work with your entities
             LOGGER.info('Connected to database');
-            cb();
+            hook();
         })
         .catch(error => {
             LOGGER.error(error);
