@@ -8,7 +8,7 @@ const create = name => {
 
     const modelPath = path.join(SRC_DIR, 'models', `${names.paramSingular}.ts`);
     if (fs.existsSync(modelPath)) {
-        console.log('Model already exists');
+        console.log('- Model already exists');
         process.exit(1);
     }
 
@@ -17,7 +17,7 @@ const create = name => {
 
     const replacements = [new Replacement('pascalSingular', names.pascalSingular)];
 
-    console.log(`Creating Model:`, names.paramSingular);
+    console.log(`- Creating Model:`, names.paramSingular);
     util.writeTemplate(template, modelPath, replacements);
 };
 

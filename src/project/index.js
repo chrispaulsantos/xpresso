@@ -7,7 +7,7 @@ const inquirer = require('inquirer');
 const colors = require('colors');
 const pad = require('pad');
 const Replacement = require('../replacement');
-const route = require('../route');
+const crypto = require('crypto');
 
 const DATABASE_TYPES = ['postgres', 'mysql', 'mongodb'];
 const DATABASE_PORTS = {
@@ -34,18 +34,12 @@ function makeProjectDir() {
     fs.mkdirSync(PROJECT_DIR);
 }
 
-function copyBaseProjectStructure() {
+function cloneBaseProjectStructure() {
     // Copy project structure
-    const projectTemplateStructurePath = path.join(TEMPLATE_DIR, 'project');
-
-    console.log('- Copying default template structure');
-    fs.copySync(projectTemplateStructurePath, PROJECT_DIR);
-
-    util.getFiles(PROJECT_DIR)
-        .sort()
-        .forEach(file => {
-            console.log(file);
-        });
+    process.chdir(PROJECT_DIR);
+    child_process.execSync('git clone https://github.com/chrispaulsantos/xpresso-template.git .', {
+        stdio: 'inherit'
+    });
 }
 
 function createEmptyFolders() {
@@ -89,10 +83,16 @@ function updatePackageJSON(names, options) {
 function setupDatabase(names, options) {
     // The destination folder path in the src folder
     const dbDestinationFolderPath = path.join(SRC_DIR, 'database');
-    fs.mkdirSync(dbDestinationFolderPath);
+    if (!fs.existsSync(dbDestinationFolderPath)) {
+        fs.mkdirSync(dbDestinationFolderPath);
+    }
 
     // Create the database index.ts
     const dbIndexPath = path.join(dbDestinationFolderPath, 'index.ts');
+    if (fs.existsSync(dbIndexPath)) {
+        fs.removeSync(dbIndexPath);
+    }
+
     if (options.databaseType !== 'mongodb') {
         const dbTemplatePath = path.join(TEMPLATE_DIR, 'database', 'sql');
         fs.copySync(dbTemplatePath, dbIndexPath);
@@ -117,21 +117,73 @@ function setupDatabase(names, options) {
 }
 
 function npmInstall() {
+    console.log('- Installing dependencies');
+
     process.chdir(PROJECT_DIR);
-    const npm = child_process.spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['i'], {
+    const npm = child_process.spawnSync(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['i'], {
         stdio: 'inherit'
     });
 }
 
 function installDatabaseDependencies(dependencies) {
+    console.log('- Installing selected database dependencies')
+
     process.chdir(PROJECT_DIR);
-    const npm = child_process.spawn(
+    const npm = child_process.spawnSync(
         /^win/.test(process.platform) ? 'npm.cmd' : 'npm',
         ['i', '-S', ...dependencies],
         {
             stdio: 'inherit'
         }
     );
+}
+
+function generateJWTSecret() {
+    console.log('- Generating JWT secret');
+
+    // Generate 512-bit string
+    const secret = crypto.randomBytes(64).toString('hex');
+
+    console.log('- Updating config');
+    let configPath = path.join(SRC_DIR, 'config.ts');
+
+    let template = fs.readFileSync(configPath).toString();
+    let replacements = [
+        {
+            key: /{{JWT_SECRET}}/g,
+            with: secret
+        }
+    ];
+
+    util.writeTemplate(template, configPath, replacements);
+}
+
+function resetGitRepo(repo) {
+    console.log('- Resetting git repo')
+
+    process.chdir(PROJECT_DIR);
+    console.log('rm -r .git');
+    fs.removeSync(path.join(PROJECT_DIR, '.git'));
+
+    console.log('- Initial commit');
+    console.log('git init');
+    child_process.execSync('git init', {
+        stdio: 'inherit'
+    });
+
+    console.log('git add .');
+    console.log('git commit -m "Initial commit"');
+    child_process.execSync('git add . && git commit -m "Initial commit"', {
+        stdio: 'inherit'
+    });
+
+    if (repo) {
+        console.log('- Adding remote');
+        console.log('git remote add origin ' + repo);
+        child_process.execSync('git remote add origin ' + repo, {
+            stdio: 'inherit'
+        });
+    }
 }
 
 function questions() {
@@ -155,12 +207,16 @@ function questions() {
 }
 
 /* GENERATE THE INITIAL PROJECT STRUCTURE */
-function generateFolderStructure(names, options) {
+function run(names, options) {
     makeProjectDir();
-    copyBaseProjectStructure();
+    cloneBaseProjectStructure();
     createEmptyFolders();
     updatePackageJSON(names, options);
     setupDatabase(names, options);
+    generateJWTSecret();
+    npmInstall();
+    installDatabaseDependencies(DATABASE_EXTRA_PACKAGES[options.databaseType].deps);
+    resetGitRepo(options.repo);
 }
 
 function init(names, options) {
@@ -173,19 +229,14 @@ function init(names, options) {
     PROJECT_DIR = path.join(pwd, names.projectName);
     SRC_DIR = path.join(PROJECT_DIR, 'src');
 
+    console.log('- Project Path: ' + PROJECT_DIR);
+    console.log('- Source Path: ' + SRC_DIR);
+
     // Ask for user prompt first
     questions().then(answers => {
         options = { ...options, ...answers };
 
-        generateFolderStructure(names, options);
-
-        if (options.auth) {
-            route.auth(options);
-        }
-
-        console.log('- Installing dependencies');
-        npmInstall();
-        installDatabaseDependencies(DATABASE_EXTRA_PACKAGES[options.databaseType].deps);
+        run(names, options);
     });
 }
 

@@ -19,7 +19,6 @@ program
     .command('init [name]')
     .option('-r, --repo [repo]', 'specify repository for the project')
     .option('-s, --summary [summary]', 'set the summary of the project')
-    .option('--no-auth', 'disables jwt authentication')
     .action((name, cmd) => {
         if (!name || name === '') {
             console.error('Provide a project name');
@@ -30,12 +29,10 @@ program
 
         let names = util.generateNames(name);
 
-        let auth = cmd.auth;
         let summary = cmd.summary;
         let repo = cmd.repo;
 
         let options = {
-            auth,
             summary,
             repo
         };
@@ -56,7 +53,6 @@ program.command('model [name]').action((name, cmd) => {
 
 program
     .command('route [name]')
-    .option('-w, --websocket', 'add a websocket handler')
     .option('--no-auth', 'disables jwt authentication for the route')
     .option('--no-spec', 'disables spec file generation for this route')
     .action((name, cmd) => {

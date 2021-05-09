@@ -8,10 +8,10 @@ const Replacement = require('./replacement');
 
 function setupEnv(name) {
     XPRESSO_DIR = getXpressoDirectory();
-    console.log('Xpresso Install Path:', XPRESSO_DIR);
+    console.log('- Xpresso Install Path:', XPRESSO_DIR);
 
     TEMPLATE_DIR = path.join(XPRESSO_DIR, 'templates');
-    console.log('Xpresso Template Directory:', TEMPLATE_DIR);
+    console.log('- Xpresso Template Directory:', TEMPLATE_DIR);
 
     const projectDirectory = getProjectDirectoryPath();
     if (!projectDirectory) {
@@ -20,10 +20,10 @@ function setupEnv(name) {
     }
 
     PROJECT_DIR = projectDirectory;
-    console.log('Project Directory:', PROJECT_DIR);
+    console.log('- Project Directory:', PROJECT_DIR);
 
     SRC_DIR = path.join(PROJECT_DIR, 'src');
-    console.log('Source Directory:', SRC_DIR);
+    console.log('- Source Directory:', SRC_DIR);
 
     PROJECT_PACKAGE = getProjectPackageJson();
 
@@ -100,6 +100,30 @@ function getProjectDirectoryPath() {
     }
 
     return packagePath;
+}
+
+function addImport(filePath, content) {
+    let fullPath = path.join(SRC_DIR, filePath);
+    let file = fs.readFileSync(fullPath);
+    let fileContent = file.toString().split('\n');
+
+    let i;
+    for (i = 0; i < fileContent.length; i++) {
+        if (!fileContent[i].match('^import ')) {
+            break;
+        }
+    }
+
+    const newContent = [...fileContent.slice(0, i), content, ...fileContent.slice(i, fileContent.length - 1)];
+
+    // Clean up code
+    const prettiered = prettier.format(newContent.join('\n'), {
+        tabWidth: 4,
+        singleQuote: true,
+        parser: 'typescript'
+    });
+
+    fs.writeFileSync(fullPath, prettiered);
 }
 
 function updateFileByKey(fileName, searchKey, content) {
@@ -194,5 +218,6 @@ module.exports = {
     setupEnv,
     getFiles,
     checkIsXpressoProject,
-    replace
+    replace,
+    addImport
 };

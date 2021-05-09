@@ -1,10 +1,10 @@
 {
   "name": "xpresso",
-  "version": "1.2.7",
+  "version": "2.0.0",
   "description": "A typescript express generator for fast, scalable REST APIs",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/jest/bin/jest.js",
+    "test": "jest",
     "postinstall": "node postinstall.js",
     "package": "npm pkg"
   },
@@ -13,18 +13,18 @@
   "preferGlobal": true,
   "license": "MIT",
   "devDependencies": {
-    "jest": "^24.9.0"
+    "jest": "^26.6.3"
   },
   "dependencies": {
-    "change-case": "^3.1.0",
+    "change-case": "^4.1.2",
     "colors": "^1.4.0",
-    "commander": "^2.20.3",
-    "fs-extra": "^7.0.1",
-    "inquirer": "^6.5.2",
-    "lodash": "^4.17.20",
+    "commander": "^7.2.0",
+    "fs-extra": "^10.0.0",
+    "inquirer": "^8.0.0",
+    "lodash": "^4.17.21",
     "pad": "^3.2.0",
-    "pluralize": "^7.0.0",
-    "prettier": "^1.19.1"
+    "pluralize": "^8.0.0",
+    "prettier": "^2.2.1"
   },
   "bin": {
     "xpresso": "./index.js"
