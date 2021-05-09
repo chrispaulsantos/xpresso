@@ -10,7 +10,9 @@ import { Logger } from '../services/logger';
 
 const LOGGER: Logger = Logger.getLogger('Database');
 
-export function connect(hook: () => void) {
+type ConnectHook: () => void;
+
+export function connect(hook: ConnectHook) {
     mongoose.connection.on('connecting', () => {
         LOGGER.info('connecting to database');
     });

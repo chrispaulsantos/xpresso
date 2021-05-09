@@ -3,7 +3,9 @@ import { Logger } from '../services/logger';
 
 const LOGGER = Logger.getLogger('Database');
 
-export function connect(cb: any) {
+type ConnectHook: () => void;
+
+export function connect(hook: ConnectHook) {{
     LOGGER.info('Connecting to database');
     LOGGER.info(`Host: localhost`);
     createConnection({

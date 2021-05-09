@@ -1,12 +1,12 @@
 {
   "name": "xpresso",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A typescript express generator for fast, scalable REST APIs",
   "main": "index.js",
   "scripts": {
     "test": "jest",
     "postinstall": "node postinstall.js",
-    "package": "npm pkg"
+    "package": "npm pack"
   },
   "author": "Chris Santos",
   "repository": "chrispaulsantos/xpresso",
