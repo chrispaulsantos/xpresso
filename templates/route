@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Request, Response, Router } from 'express';
 import { Logger } from '../services/logger';
-{{websocketImport}}
+import { Request, Router } from '../typings';
 
 {{authImport}}
 
@@ -26,24 +26,22 @@ export class {{pascalSingular}}Routes {
     }
 
     private bootstrap(): void {
-        {{websocketRoute}}
-
         {{authMiddleware}}
 
-        this.router.get('/{{paramPlural}}', async (req: Request, res: Response) => {
-            res.status(200).end();
+        this.router.get('/', async (req: Request, res: Response) => {
+            res.status(501).end();
         })
-        this.router.post('/{{paramPlural}}', async (req: Request, res: Response) => {
-            res.status(200).end();
+        this.router.post('/', async (req: Request, res: Response) => {
+            res.status(501).end();
         })
-        this.router.get('/{{paramPlural}}/:id', async (req: Request, res: Response) => {
-            res.status(200).end();
+        this.router.get('/:id', async (req: Request, res: Response) => {
+            res.status(501).end();
         })
-        this.router.put('/{{paramPlural}}/:id', async (req: Request, res: Response) => {
-            res.status(200).end();
+        this.router.put('/:id', async (req: Request, res: Response) => {
+            res.status(501).end();
         })
-        this.router.delete('/{{paramPlural}}/:id', async (req: Request, res: Response) => {
-            res.status(200).end();
+        this.router.delete('/:id', async (req: Request, res: Response) => {
+            res.status(501).end();
         })
     }
 }

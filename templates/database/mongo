@@ -8,9 +8,11 @@ import { Logger } from '../services/logger';
 // STARTSCHEMAIMPORTS //
 // ENDSCHEMAIMPORTS //
 
-const LOGGER: Logger = Logger.getLogger('ConnectionFactory');
+const LOGGER: Logger = Logger.getLogger('Database');
 
-export function connect(hook: () => void) {
+type ConnectHook = () => void
+
+export function connect(hook: ConnectHook) {
     mongoose.connection.on('connecting', () => {
         LOGGER.info('connecting to database');
     });
@@ -27,7 +29,7 @@ export function connect(hook: () => void) {
     });
 
     mongoose.connect(
-        process.env.DB_URL || `{{databaseUrl}}/{{databaseName}}`,
+        process.env.DB_URL || `mongodb://localhost:27017/{{databaseName}}`,
         { useNewUrlParser: true }
     );
 }
