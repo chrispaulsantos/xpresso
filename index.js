@@ -5,6 +5,7 @@ const util = require('./src/utility');
 const project = require('./src/project');
 const model = require('./src/model');
 const route = require('./src/route');
+const package = require('./package.json');
 
 XPRESSO_DIR = '';
 TEMPLATE_DIR = '';
@@ -13,7 +14,7 @@ SRC_DIR = '';
 PROJECT_PACKAGE = {};
 NAME_REPLACEMENTS = [];
 
-program.version('1.2.7', '-v, --version');
+program.version(package.version, '-v, --version');
 
 program
     .command('init [name]')

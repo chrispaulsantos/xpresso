@@ -9,7 +9,7 @@ const pad = require('pad');
 const Replacement = require('../replacement');
 const crypto = require('crypto');
 
-const DATABASE_TYPES = ['postgres', 'mysql', 'mongodb'];
+const DATABASE_TYPES = ['postgres', 'mysql'];
 const DATABASE_PORTS = {
     postgres: 5432,
     mysql: 3306,

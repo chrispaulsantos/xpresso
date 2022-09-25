@@ -1,31 +1,33 @@
-import { createConnection } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Logger } from '../services/logger';
+import config from '../config';
 
 const LOGGER = Logger.getLogger('Database');
 
+const dataSource = new DataSource({
+    type: 'postgres',
+    host: config.database.host,
+    port: 5432,
+    username: config.database.username,
+    password: config.database.password,
+    database: config.database.name,
+    entities: [],
+    synchronize: true,
+    logging: false
+});
+
 type ConnectHook = () => void;
 
-export function connect(hook: ConnectHook) {{
+export function connect(cb: ConnectHook) {
     LOGGER.info('Connecting to database');
-    LOGGER.info(`Host: localhost`);
-    createConnection({
-        type: '{{sqlDatabaseType}}',
-        host: 'localhost',
-        port: {{databasePort}},
-        username: '{{sqlDatabaseType}}',
-        password: process.env.POSTGRES_PASSWORD,
-        database: '{{databaseName}}',
-        entities: [],
-        synchronize: true,
-        logging: false
-    })
-        .then(async connection => {
-            // here you can start to work with your entities
-            LOGGER.info('Connected to database');
-            hook();
-        })
-        .catch(error => {
-            LOGGER.error(error);
-            process.exit(1);
-        });
+    LOGGER.info(`Host: ${config.database.host}`);
+    
+    dataSource.initialize().then(async () => {
+        // Here you can start to work with your entities
+        LOGGER.info('Connected to database');
+        cb();
+    }).catch((error) => {
+        LOGGER.error(error);
+        process.exit(1);
+    });
 }
